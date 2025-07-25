@@ -1,0 +1,68 @@
+<!-- This is the character customization page -->
+ <!-- Here, they choose their starting location and starting money -->
+ <!DOCTYPE html>
+ <html>
+    <head>
+        <title>Pestilence Path: Cure the Scourge</title>
+        <link rel="stylesheet" href="style.css">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Kranky&family=Manufacturing+Consent&display=swap');
+        </style>
+    </head>
+    <body>
+        <div class="main-center" style="font-size: 100px;">What is your primary occupation?</div>
+        <div class="main-center">
+            <button class="title-button-2" style="margin-left: 5px;
+                                                margin-right: 5px;" 
+                    value="farmer" onclick="changeJobMoney(this.value)" id="farmeroption">Farmer</button>
+            <button class="title-button-2" style="color: green;
+                                                margin-left: 5px;
+                                                margin-right: 5px;" 
+                    value="barber" onclick="changeJobMoney(this.value)" id="barberoption">Barber</button>
+            <button class="title-button-2" style="margin-left: 5px;
+                                                margin-right: 5px;" 
+                    value="medic" onclick="changeJobMoney(this.value)" id="doctoroption">Doctor</button>
+        </div>
+        <div class="main-center" style="font-size: 30px;">
+            <br>
+            Farmer (Hard): Start with 200 marc of food, but 50 denarii and earn 2x points
+            <br>
+            Barber (Normal): Start with 125 denarii and earn 1x points
+            <br>
+            Doctor (Easy): Start with 200 denarii and 50 marc of herbs, but earn 0.25x points
+        </div>
+        <br>
+        <div class="main-center">When would you like to leave?</div>
+        <div class="main-center">
+            <button class="title-button-2" style="margin-left: 5px;
+                                                margin-right: 5px;" 
+                    value="winter" onclick="changeInitialSeason(this.value)" id="winteroption">Winter</button>
+            <button class="title-button-2" style="margin-left: 5px;
+                                                margin-right: 5px;" 
+                    value="spring" onclick="changeInitialSeason(this.value)" id="springoption">Spring</button>
+            <button class="title-button-2" style="margin-left: 5px;
+                                                margin-right: 5px;" 
+                    value="summer" onclick="changeInitialSeason(this.value)" id="summeroption">Summer</button>
+            <button class="title-button-2" style="color: brown;
+                                                margin-left: 5px;
+                                                margin-right: 5px;"
+                    value="fall" onclick="changeInitialSeason(this.value)" id="falloption">Fall</button>
+        </div>
+        <div class="main-center" style="font-size: 30px;">
+            <br>
+            Winter (Hard): Bitter cold conditions and a lack of food keep your daily travels short
+            <br>
+            Spring (Easy): Warmer weather and more available food, but greater risk of getting stuck or injured
+            <br>
+            Summer (Medium): Scorching heat but  a budding harvest and longer periods of daylight to travel
+            <br>
+            Fall (Very Easy): Cool, fair weather and an abundant harvest to keep you going
+        </div>
+        <div class="main-center">
+            <a href="shop.html">
+                <button class="title-button-2" style="margin-top: 20px;">Continue</button>
+            </a>
+        </div>
+        <script src="script.js"></script>
+    </body>
+ </html>

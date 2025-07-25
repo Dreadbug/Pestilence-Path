@@ -1,0 +1,65 @@
+/* Styling for the game */
+
+/* Make the background completely black */
+body {
+    background-color: black;
+    font-family: 'Manufacturing Consent','Brush Script MT';
+    color: white;
+    font-size: 60px;
+}
+
+.main-center {
+    display: flex;
+    justify-content: center;
+}
+
+.title-button-1 {
+    border-color: white;
+    border-style: solid;
+    background-color: black;
+    color: white;
+    font-family: 'Manufacturing Consent','Brush Script MT';
+    font-size: 70px;
+    padding-left: 146px;
+    padding-right: 146px;
+    margin-bottom: 5px;
+}
+
+.title-button-2 {
+    border-color: white;
+    border-style: solid;
+    background-color: black;
+    color: white;
+    font-family: 'Manufacturing Consent','Brush Script MT';
+    font-size: 70px;
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.title-button-3 {
+    border-color: white;
+    border-style: solid;
+    background-color: black;
+    color: white;
+    font-family: 'Manufacturing Consent','Brush Script MT';
+    font-size: 70px;
+    padding-left: 130px;
+    padding-right: 130px;
+    margin-top: 5px;
+}
+
+.text-input-box {
+    background-color: black;
+    color: white;
+    font-family: 'Manufacturing Consent','Brush Script MT';
+    border-color: white;
+    border-style: solid;
+    font-size: 60px;
+}
+
+.shop-main-container {
+    display: grid;
+    grid-template-columns: auto auto;
+}
