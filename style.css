@@ -61,5 +61,6 @@ body {
 
 .shop-main-container {
     display: grid;
-    grid-template-columns: auto auto;
+    align-content: center;
+    grid-template-columns: 400px 300px 300px;
 }
