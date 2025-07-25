@@ -142,6 +142,7 @@ function changeJobMoney(job) {
 }
 
 // Update a bunch of difficulty variables based on chosen season
+// The date is European format (d/m/y)
 function changeInitialSeason(chosenSeason) {
     season = chosenSeason
     if (chosenSeason == "winter") {
@@ -181,6 +182,64 @@ function changeInitialSeason(chosenSeason) {
     sessionStorage.setItem("season",JSON.stringify(season))
     sessionStorage.setItem("seasonTemp",JSON.stringify(seasonTemp))
     sessionStorage.setItem("date",JSON.stringify(date))
+}
+
+// Calculate player's current bill and display it to them
+function calculateBill() {
+    const food = document.getElementById("foodbought").value
+    const arrows = document.getElementById("ammobought").value
+    const herbs = document.getElementById("herbsbought").value
+    const wheel = document.getElementById("wheelsbought").value
+    const axle = document.getElementById("axlesbought").value
+    const tongue = document.getElementById("tonguesbought").value
+    const clothes = document.getElementById("clothesbought").value
+    const oxen = document.getElementById("oxenbought").value
+
+    let totalBill = (food * 1) + (arrows * 5) + (herbs * 10) + (wheel * 30) + (axle * 30) + (tongue * 30) + (clothes * 15) + (oxen * 50)
+
+    if ((playerItems["money"] - totalBill) < 0) {
+        alert("You do not have enough money to pay for this bill! Please reduce your purchases.")
+        return
+    }
+    else {
+        document.getElementById("moneyavailable").innerHTML = playerItems["money"] - totalBill
+    }
+}
+
+// Reduce player's money and update their items
+function finishPurchase() {
+    const food = document.getElementById("foodbought").value
+    const arrows = document.getElementById("ammobought").value
+    const herbs = document.getElementById("herbsbought").value
+    const wheel = document.getElementById("wheelsbought").value
+    const axle = document.getElementById("axlesbought").value
+    const tongue = document.getElementById("tonguesbought").value
+    const clothes = document.getElementById("clothesbought").value
+    const oxen = document.getElementById("oxenbought").value
+
+    let totalBill = (food * 1) + (arrows * 5) + (herbs * 10) + (wheel * 30) + (axle * 30) + (tongue * 30) + (clothes * 15) + (oxen * 50)
+
+    if ((playerItems["money"] - totalBill) < 0) {
+        alert("You do not have enough money to pay for this bill! Please reduce your purchases.")
+        return
+    }
+    else {
+        playerItems["money"] -= totalBill
+        playerItems["food"] += parseInt(food)
+        playerItems["arrows"] += (parseInt(arrows) * 20)
+        playerItems["herbs"] += parseInt(herbs)
+        playerItems["wheel"] += parseInt(wheel)
+        playerItems["axle"] += parseInt(axle)
+        playerItems["tongue"] += parseInt(tongue)
+        playerItems["clothes"] += parseInt(clothes)
+        playerItems["oxen"] += (parseInt(oxen) * 2)
+
+        // Save to session storage
+        sessionStorage.setItem("playerItems",JSON.stringify(playerItems))
+
+        // Send player to next page
+        window.location.href = "ready_to_begin.html"
+    }
 }
 
 // For checking if values are changed
