@@ -13,10 +13,73 @@
         <div class="main-center">
             <div class="shop-main-container">
                 <div>Item</div>
-                <div>Price (&#x10196;)</div>
+                <div>Price (&#8368;)</div>
+                <div>Amount</div>
+                <div>Food (marc)</div>
+                <div>1</div>
+                <div>
+                    <form>
+                        <input type="number" class="text-input-box" style="width: 170px;" min="0" value="0" id="foodbought">
+                    </form>
+                </div>
+                <div>Arrows</div>
+                <div>5 for 20</div>
+                <div>
+                    <form>
+                        <input type="number" class="text-input-box" style="width: 170px;" min="0" value="0" id="ammobought">
+                    </form>
+                </div>
+                <div>Herbs (marc)</div>
+                <div>10</div>
+                <div>
+                    <form>
+                        <input type="number" class="text-input-box" style="width: 170px;" min="0" value="0" id="herbsbought">
+                    </form>
+                </div>
+                <div>Clothes</div>
+                <div>15 per Set</div>
+                <div>
+                    <form>
+                        <input type="number" class="text-input-box" style="width: 170px;" min="0" value="0" id="clothesbought">
+                    </form>
+                </div>
+                <div>Oxen</div>
+                <div>50 for 2</div>
+                <div>
+                    <form>
+                        <input type="number" class="text-input-box" style="width: 170px;" min="0" value="0" id="oxenbought">
+                    </form>
+                </div>
+                <div>Wagon Wheel</div>
+                <div>30</div>
+                <div>
+                    <form>
+                        <input type="number" class="text-input-box" style="width: 170px;" min="0" value="0" id="wheelsbought">
+                    </form>
+                </div>
+                <div>Wagon Axle</div>
+                <div>30</div>
+                <div>
+                    <form>
+                        <input type="number" class="text-input-box" style="width: 170px;" min="0" value="0" id="axlesbought">
+                    </form>
+                </div>
+                <div>Wagon Tongue</div>
+                <div>30</div>
+                <div>
+                    <form>
+                        <input type="number" class="text-input-box" style="width: 170px;" min="0" value="0" id="tonguesbought">
+                    </form>
+                </div>
             </div>
         </div>
-        <button onclick="logAValue()" class="title-button-2">Purchase</button>
+        <div class="main-center">
+            You have&nbsp;<span id="moneyavailable"></span>&nbsp;pf available to spend.
+        </div>
+        <div class="main-center">
+            <button onclick="calculateBill()" class="title-button-2">Calculate Bill</button>
+            <button onclick="finishPurchase()" class="title-button-2">Purchase</button>
+        </div>
         <script src="script.js"></script>
     </body>
  </html>
