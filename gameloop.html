@@ -8,15 +8,9 @@
             @import url('https://fonts.googleapis.com/css2?family=Kranky&family=Manufacturing+Consent&display=swap');
         </style>
     </head>
-    <body>
-        <div class="main-center" style="font-size: 90px;" id="storytext">
-            Your Party
-        </div>
-        <div class="main-center" style="position: fixed;
-                                        bottom: 60px;
-                                        left: 50%;
-                                        transform: translateX(-50%);">
-            <button onclick="logAValue()" class="title-button-2">Continue</button>
+    <body onload="initializeCanvas()">
+        <div>
+            <canvas id="gamecanvas" width="window" height="window"></canvas>
         </div>
         <script src="script.js"></script>
     </body>
