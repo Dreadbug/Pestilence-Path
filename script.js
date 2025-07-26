@@ -67,24 +67,29 @@ else {
 
 
 // Button on story screen
-const storyText = document.getElementById("storytext")
 let numClicks = 0
 function changeTitleText() {
+    const storyText = document.getElementById("storytext")
     numClicks += 1
     if (numClicks == 1) {
         storyText.innerHTML = "...Medieval Europe. 1347. A time of sorrow and suffering..."
+        document.body.style.backgroundImage = "url('assets/suffering.png')"
     }
     else if (numClicks == 2) {
         storyText.innerHTML = "...the Plague ravages the wicked and the righteous alike..."
     }
     else if (numClicks == 3) {
         storyText.innerHTML = "...no one is safe from its evil influence..."
+        document.body.style.backgroundImage = "url('assets/no one.png')"
     }
     else if (numClicks == 4) {
         storyText.innerHTML = "...someone needs to bring the light to this forsaken place..."
+        document.body.style.backgroundImage = "url('assets/someone.png')"
     }
     else if (numClicks == 5) {
         storyText.innerHTML = "...Doctor, we need you more than ever."
+        storyText.style.color = "black"
+        document.body.style.backgroundImage = "url('assets/doctor.png')"
     }
     else {
         window.location.href = "creator.html"
