@@ -242,6 +242,20 @@ function finishPurchase() {
     }
 }
 
+// Populate canvas with text and starting animation
+function initializeCanvas() {
+    // Get game canvas
+    const gameCanvas = document.getElementById("gamecanvas")
+    const ctx = gameCanvas.getContext("2d")
+
+    ctx.fillStyle = "black"
+    ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height)
+    ctx.font = "45px Manufacturing Consent"
+    ctx.fillStyle = "white"
+    ctx.textAlign = "center"
+    ctx.fillText("Your Party", gameCanvas.width / 2,100)
+}
+
 // For checking if values are changed
 function logAValue() {
     console.log(playerParty)
