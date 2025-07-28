@@ -8,9 +8,51 @@
             @import url('https://fonts.googleapis.com/css2?family=Kranky&family=Manufacturing+Consent&display=swap');
         </style>
     </head>
-    <body onload="initializeCanvas()">
-        <div>
-            <canvas id="gamecanvas" width="window" height="window"></canvas>
+    <body onload="initializeGameloop()">
+        <canvas id="gamecanvas"></canvas>
+        <div class="main-center" style="font-size: 90px;
+                                        position:absolute;
+                                        left: 40%;
+                                        top: 0%;">
+            Your Party
+        </div>
+        <div class="gameloop-container" style="position:absolute;
+                                        left: 2%;
+                                        top: 10%;">
+            <div>Date:</div>
+            <div id="showdate">1/10/1347</div>
+            <div>Season:</div>
+            <div id="showseason">Fall</div>
+            <div>Temperature:</div>
+            <div id="showtemperature">15°C</div>
+            <div>Precipitation:</div>
+            <div id="showprecipitation">None</div>
+            <div>Wind:</div>
+            <div id="showwind">Calm</div>
+            <div>Distance:</div>
+            <div id="showdistance">1000 km</div>
+            <div>Pace:</div>
+            <div id="showpace">Normal</div>
+            <div>Food:</div>
+            <div id="showfood">100 marc</div>
+            <div>Rations:</div>
+            <div id="showrations">Filling</div>
+            <div>Health:</div>
+            <div id="showhealth">Good</div>
+            <div>Money:</div>
+            <div id-showmoney>100 pf</div>
+        </div>
+        <div class="gameloop-container" style="position:absolute;
+                                        left: 2%;
+                                        top: 77%;">
+            <div>You:</div>
+            <div id="showyou">Good</div>
+            <div id="showwifename">Petra:</div>
+            <div id="showwife">Good</div>
+            <div id="showdaughtername">Margeratta:</div>
+            <div id="showdaughter">Good</div>
+            <div id="showsonname">Gunther:</div>
+            <div id="showson">Good</div>
         </div>
         <script src="script.js"></script>
     </body>
