@@ -2,6 +2,104 @@
 // It also holds the game behavior
 
 
+// #region Lookup tables
+let summerTempLookup = {
+    "Holy Roman Empire": 20,
+    "France": 20,
+    "Castile": 20,
+    "Portugal": 20,
+    "England": 15,
+    "Scotland": 10,
+    "Norway": 5,
+    "Sweden": 5,
+    "Novgorod": 5,
+    "Lithuania": 10,
+    "Poland": 15,
+    "Hungary": 15,
+    "Bulgaria": 15,
+    "Byzantium": 20,
+    "Serbia": 15,
+    "Naples": 20,
+    "Papal States": 20,
+}
+
+let fallTempLookup = {
+    "Holy Roman Empire": 20,
+    "France": 20,
+    "Castile": 20,
+    "Portugal": 20,
+    "England": 15,
+    "Scotland": 10,
+    "Norway": 5,
+    "Sweden": 5,
+    "Novgorod": 5,
+    "Lithuania": 10,
+    "Poland": 15,
+    "Hungary": 15,
+    "Bulgaria": 15,
+    "Byzantium": 20,
+    "Serbia": 15,
+    "Naples": 20,
+    "Papal States": 20,
+}
+
+let winterTempLookup = {
+    "Holy Roman Empire": 20,
+    "France": 20,
+    "Castile": 20,
+    "Portugal": 20,
+    "England": 15,
+    "Scotland": 10,
+    "Norway": 5,
+    "Sweden": 5,
+    "Novgorod": 5,
+    "Lithuania": 10,
+    "Poland": 15,
+    "Hungary": 15,
+    "Bulgaria": 15,
+    "Byzantium": 20,
+    "Serbia": 15,
+    "Naples": 20,
+    "Papal States": 20,
+}
+
+let springTempLookup = {
+    "Holy Roman Empire": 20,
+    "France": 20,
+    "Castile": 20,
+    "Portugal": 20,
+    "England": 15,
+    "Scotland": 10,
+    "Norway": 5,
+    "Sweden": 5,
+    "Novgorod": 5,
+    "Lithuania": 10,
+    "Poland": 15,
+    "Hungary": 15,
+    "Bulgaria": 15,
+    "Byzantium": 20,
+    "Serbia": 15,
+    "Naples": 20,
+    "Papal States": 20,
+}
+
+let precipitationLookup = {
+    "Stormy" : 0.2,
+    "Rainy" : 0.4,
+    "Clear" : 0.5,
+    "Snowy" : 0.1
+}
+
+let windLookup = {
+    "Calm" : 0.5,
+    "Cooling" : 0.3,
+    "Gusty" : 0.15,
+    "Straightline" : 0.05
+}
+// #endregion
+
+
+// #region Anything that needs to be grabbed from sessionStorage
 // Establish player
 let playerParty
 if (sessionStorage.getItem("playerParty")) {
@@ -17,6 +115,14 @@ if (sessionStorage.getItem("playerHealth")) {
 }
 else {
     playerHealth = {player:0,wife:0,daughter:0,son:0}
+}
+
+let rations
+if (sessionStorage.getItem("rations")) {
+    rations = JSON.parse(sessionStorage.getItem("rations"))
+}
+else {
+    rations = "Filling"
 }
 
 let playerItems
@@ -35,8 +141,7 @@ else {
     scoreMultiplier = 1.0
 }
 
-
-// Establish the season/weather and related difficulty
+// Establish the season/weather, country/temp and related difficulty
 let season
 if (sessionStorage.getItem("season")) {
     season = JSON.parse(sessionStorage.getItem("season"))
@@ -45,26 +150,56 @@ else {
     season = "fall"
 }
 
-let seasonTemp
-if (sessionStorage.getItem("seasonTemp")) {
-    seasonTemp = JSON.parse(sessionStorage.getItem("seasonTemp"))
+let country
+if (sessionStorage.getItem("country")) {
+    country = JSON.parse(sessionStorage.getItem("country"))
 }
 else {
-    seasonTemp = 10
+    country = "Holy Roman Empire"
 }
 
-// Keep track of days and distance
-let distance = 0
-let days = 0
+// Set the temperature based on the season and country
+// The temperature is in Celsius
+let temperature
+if (season == "summer") {
+        temperature = summerTempLookup[country]
+}
+else if (season == "fall") {
+        temperature = fallTempLookup[country]
+}
+else if (season == "winter") {
+        temperature = winterTempLookup[country]
+}
+else {
+        temperature = springTempLookup[country]
+}
+
+
+// Keep track of distance
+let distance
+if (sessionStorage.getItem("distance")) {
+    distance = JSON.parse(sessionStorage.getItem("distance"))
+}
+else {
+    distance = 1000
+}
+
+let pace
+if (sessionStorage.getItem("pace")) {
+    pace = JSON.parse(sessionStorage.getItem("pace"))
+}
+else {
+    pace = "Normal"
+}
 
 let date
 if (sessionStorage.getItem("date")) {
     date = JSON.parse(sessionStorage.getItem("date"))
 }
 else {
-    date = "1/10/1347"
+    date = {day:1,month:10,year:1347}
 }
-
+// #endregion
 
 // Button on story screen
 let numClicks = 0
@@ -249,14 +384,201 @@ function finishPurchase() {
 
 // Populate canvas with text and starting animation
 function initializeGameloop() {
-    // Get game canvas
+    // Fill in canvas
     const gameCanvas = document.getElementById("gamecanvas")
     gameCanvas.width = window.innerWidth
     gameCanvas.height = window.innerHeight
     const ctx = gameCanvas.getContext("2d")
-
     ctx.fillStyle = "red"
     ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height)
+
+    // Fill in tables with player info
+    populateTables()
+}
+
+
+function populateTables() {
+    // Date
+    const dateCell = document.getElementById("showdate")
+    console.log(date["day"], date["month"], date["year"])
+    dateCell.innerHTML = String(date["day"]) + "/" + String(date["month"]) + "/" + String(date["year"])
+
+    // Season
+    const seasonCell = document.getElementById("showseason")
+    seasonCell.innerHTML = season.charAt(0).toUpperCase() + season.slice(1)
+
+    // Temperature
+    const temperatureCell = document.getElementById("showtemperature")
+    temperatureCell.innerHTML = String(determineTemperature(season,country)) + " °C"
+
+    // Precipitation
+    const precipitationCell = document.getElementById("showprecipitation")
+    precipitationCell.innerHTML = determinePrecipitation()
+
+    // Wind
+    const windCell = document.getElementById("showwind")
+    windCell.innerHTML = determineWind(precipitationCell.innerHTML)
+
+    // Distance
+    const distanceCell = document.getElementById("showdistance")
+    distanceCell.innerHTML = String(distance) + " km"
+
+    // Pace
+    const paceCell = document.getElementById("showpace")
+    paceCell.innerHTML = pace
+
+    // Food
+    const foodCell = document.getElementById("showfood")
+    foodCell.innerHTML = String(playerItems["food"]) + " marc"
+
+    // Rations
+    const rationsCell = document.getElementById("showrations")
+    rationsCell.innerHTML = rations
+
+    // Health
+    const healthCell = document.getElementById("showhealth")
+    healthCell.innerHTML = determineOverallHealth()
+
+    // Money
+    const moneyCell = document.getElementById("showmoney")
+    moneyCell.innerHTML = String(playerItems["money"]) + " pf"
+
+    // Player
+    const playerHealthCell = document.getElementById("showyou")
+    playerHealthCell.innerHTML = getIndividualHealth("player")
+
+    // Wife
+    const wifeNameCell = document.getElementById("showwifename")
+    wifeNameCell.innerHTML = playerParty["wife"]
+    const wifeHealthCell = document.getElementById("showwife")
+    wifeHealthCell.innerHTML = getIndividualHealth("wife")
+
+    // Daughter
+    const daughterNameCell = document.getElementById("showdaughtername")
+    daughterNameCell.innerHTML = playerParty["daughter"]
+    const daughterHealthCell = document.getElementById("showdaughter")
+    daughterHealthCell.innerHTML = getIndividualHealth("daughter")
+
+    // Son
+    const sonNameCell = document.getElementById("showsonname")
+    sonNameCell.innerHTML = playerParty["son"]
+    const sonHealthCell = document.getElementById("showson")
+    sonHealthCell.innerHTML = getIndividualHealth("son")
+}
+
+// Group of functions that return what to put in gameloop fields
+// Need to make difficulty adjustemnts within them still
+// Ex. stormy weather and straightline winds should make travelling harder, and thus reduce distance travelled
+function determineTemperature(currentSeason,currentCountry) {
+    // Get lookup table to be used
+    let currentLookup
+    if (currentSeason == "summer") {
+        currentLookup = summerTempLookup
+    }
+    else if (currentSeason == "fall") {
+        currentLookup = fallTempLookup
+    }
+    else if (currentSeason == "winter") {
+        currentLookup = winterTempLookup
+    }
+    else {
+        currentLookup = springTempLookup
+    }
+
+    // Establish a base temperature
+    const baseTemperature = currentLookup[currentCountry]
+
+    // Modify base temp by a random amount
+    const modifier = Math.floor(Math.random() * 10) -5
+
+    return baseTemperature + modifier
+}
+
+function determinePrecipitation() {
+    const weatherDiceroll = Math.random()
+    if ((weatherDiceroll < precipitationLookup["Snowy"]) && (temperature < 0)) {
+        return "Snowy"
+    }
+    else if (weatherDiceroll < precipitationLookup["Stormy"]) {
+        return "Stormy"
+    }
+    else if (weatherDiceroll < precipitationLookup["Rainy"]) {
+        return "Rainy"
+    }
+    else {
+        return "Clear"
+    }
+}
+
+function determineWind(currentPrecipitation) {
+    let windDiceroll = Math.random()
+    if (currentPrecipitation == "Snowy") {
+        windDiceroll -= 0.7
+    }
+    else if (currentPrecipitation == "Stormy") {
+        windDiceroll -= 0.9
+    }
+    
+    if (windDiceroll < windLookup["Straightline"]) {
+        return "Straightline"
+    }
+    else if (windDiceroll < windLookup["Gusty"]) {
+        return "Gusty"
+    }
+    else if (windDiceroll < windLookup["Cooling"]) {
+        return "Cooling"
+    }
+    else {
+        return "Calm"
+    }
+}
+
+function getIndividualHealth(member) {
+    // Check if the member is healthy, sick or dead
+    if (playerHealth[member] == 0) {
+        return "Healthy"
+    }
+    else if (playerHealth[member] == -1) {
+        return "Sick"
+    }
+    else {
+        return "Brink of Death"
+    }
+}
+
+function determineOverallHealth() {
+    let partyNumber = 0
+    let isHealthy = 0
+    
+    for (const member in playerHealth) {
+        if (playerHealth[member] == 0) {
+            isHealthy += 1
+        }
+        else if (playerHealth[member] == -1) {
+            isHealthy -= 1
+        }
+        else {
+            isHealthy -= 2
+        }
+        partyNumber += 1
+    }
+
+    const healthRatio = isHealthy / partyNumber
+    if (healthRatio < 0) {
+        return "Very poor"
+    }
+    else if (healthRatio == 0) {
+        return "Poor"
+    }
+    else if (healthRatio < 0.5) {
+        return "Fair"
+    }
+    else if (healthRatio < 1) {
+        return "Good"
+    }
+    else {
+        return "Excellent"
+    }
 }
 
 // For checking if values are changed
