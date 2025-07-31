@@ -5,17 +5,17 @@ Europe, 1347. You're a plague doctor travelling cross-continent with your family
 Taking inspiration from the classic Oreegon Trail games, this project would have you step into the shoes of a 17th-century plague doctor. Not only must you deal with the brutality of long-distance travel with your entire family, but you must also deal with the harsh realities of caravan life. But it doesn't stop there. Once you make it to the city, you must survive treating your patients. When all is said and done, another city awaits. And so the cycle continues.
 
 ### Planned Features
-**Seasons: ** The time of year will have wider implications for the player's party. The most notable being weather events and food availability.
+**Seasons:** The time of year will have wider implications for the player's party. The most notable being weather events and food availability.
 
-**Adaptive Pace: **The weather and player's health will determine how far the player can go in a given day.
+**Adaptive Pace:** The weather and player's health will determine how far the player can go in a given day.
 
-**Dynamic Difficulty: **The difficulty will fluctuate as the player moves thorugh the seasons. Random events will also becoem more harsh as supplies dwindle and health runs out.
+**Dynamic Difficulty:** The difficulty will fluctuate as the player moves thorugh the seasons. Random events will also becoem more harsh as supplies dwindle and health runs out.
 
-**Better Hunting Controls: **I have always found the hunting controls in Oregon Trail to be rather cumbersome, and plan to implement traditional WASD controls.
+**Better Hunting Controls:** I have always found the hunting controls in Oregon Trail to be rather cumbersome, and plan to implement traditional WASD controls.
 
-**Old-English Mode: **Places the entire game in Shakespearean-style English.
+**Old-English Mode:** Places the entire game in Shakespearean-style English.
 
-**The Plague: **Takes the place of dysentery. The player is a plague doctor that mut cure patients across Europe. However, the player and their party are exposed to it.
+**The Plague:** Takes the place of dysentery. The player is a plague doctor that mut cure patients across Europe. However, the player and their party are exposed to it.
 
 # The Technical Side
 ## The Project is not Complete
