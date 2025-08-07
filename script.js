@@ -4,83 +4,83 @@
 
 // #region Lookup tables
 let summerTempLookup = {
-    "Holy Roman Empire": 20,
-    "France": 20,
-    "Castile": 20,
-    "Portugal": 20,
-    "England": 15,
-    "Scotland": 10,
-    "Norway": 5,
-    "Sweden": 5,
-    "Novgorod": 5,
-    "Lithuania": 10,
-    "Poland": 15,
-    "Hungary": 15,
-    "Bulgaria": 15,
-    "Byzantium": 20,
-    "Serbia": 15,
-    "Naples": 20,
-    "Papal States": 20,
+    "Holy Roman Empire": 23, // Uses Bavaria as a reference
+    "France": 20, // Uses Paris as a reference
+    "Castile": 30, // Uses Madrid as a reference
+    "Portugal": 23, // Uses Lisbon as a reference
+    "England": 19, // Uses London as a reference
+    "Scotland": 17, // Uses Glasgow as a reference
+    "Norway": 12, // Uses Oslo as a reference
+    "Sweden": 18, // Uses Stockholm as a reference
+    "Novgorod": 21, // Uses St. Petersburg as a reference
+    "Lithuania": 22, // Uses Vilnius as a reference
+    "Poland": 20, // Uses Warsaw as a reference
+    "Hungary": 26, // Uses Budapest as a reference
+    "Bulgaria": 25, // Uses Sofia as a reference
+    "Byzantium": 32, // Uses Athens as a reference
+    "Serbia": 29, // Uses Belgrade as a reference
+    "Kingdom of Naples": 27, // Uses Naples as a reference
+    "Papal States": 24 // Uses Vatican City as a reference
 }
 
 let fallTempLookup = {
-    "Holy Roman Empire": 20,
-    "France": 20,
-    "Castile": 20,
-    "Portugal": 20,
-    "England": 15,
-    "Scotland": 10,
-    "Norway": 5,
-    "Sweden": 5,
-    "Novgorod": 5,
-    "Lithuania": 10,
-    "Poland": 15,
-    "Hungary": 15,
-    "Bulgaria": 15,
-    "Byzantium": 20,
-    "Serbia": 15,
-    "Naples": 20,
-    "Papal States": 20,
+    "Holy Roman Empire": 15, // Uses Bavaria as a reference
+    "France": 12, // Uses Paris as a reference
+    "Castile":21, // Uses Madrid as a reference
+    "Portugal": 15, // Uses Lisbon as a reference
+    "England": 13, // Uses London as a reference
+    "Scotland": 12, // Uses Glasgow as a reference
+    "Norway": 9, // Uses Oslo as a reference
+    "Sweden": 7, // Uses Stockholm as a reference
+    "Novgorod": 6, // Uses St. Petersburg as a reference
+    "Lithuania": 10, // Uses Vilnius as a reference
+    "Poland": 11, // Uses Warsaw as a reference
+    "Hungary": 14, // Uses Budapest as a reference
+    "Bulgaria": 16, // Uses Sofia as a reference
+    "Byzantium": 23, // Uses Athens as a reference
+    "Serbia": 16, // Uses Belgrade as a reference
+    "Kingdom of Naples": 20, // Uses Naples as a reference
+    "Papal States": 21 // Uses Vatican City as a reference
 }
 
 let winterTempLookup = {
-    "Holy Roman Empire": 20,
-    "France": 20,
-    "Castile": 20,
-    "Portugal": 20,
-    "England": 15,
-    "Scotland": 10,
-    "Norway": 5,
-    "Sweden": 5,
-    "Novgorod": 5,
-    "Lithuania": 10,
-    "Poland": 15,
-    "Hungary": 15,
-    "Bulgaria": 15,
-    "Byzantium": 20,
-    "Serbia": 15,
-    "Naples": 20,
-    "Papal States": 20,
+    "Holy Roman Empire": -3, // Uses Bavaria as a reference
+    "France": 5, // Uses Paris as a reference
+    "Castile": 2, // Uses Madrid as a reference
+    "Portugal": 8, // Uses Lisbon as a reference
+    "England": 6, // Uses London as a reference
+    "Scotland": 1, // Uses Glasgow as a reference
+    "Norway": -7, // Uses Oslo as a reference
+    "Sweden": -5, // Uses Stockholm as a reference
+    "Novgorod": -9, // Uses St. Petersburg as a reference
+    "Lithuania": -4, // Uses Vilnius as a reference
+    "Poland": -2, // Uses Warsaw as a reference
+    "Hungary": -1, // Uses Budapest as a reference
+    "Bulgaria": -6, // Uses Sofia as a reference
+    "Byzantium": 7, // Uses Athens as a reference
+    "Serbia": 0, // Uses Belgrade as a reference
+    "Kingdom of Naples": 9, // Uses Naples as a reference
+    "Papal States": 10 // Uses Vatican City as a reference
 }
 
 let springTempLookup = {
-    "Holy Roman Empire": 20,
-    "France": 20,
-    "Castile": 20,
-    "Portugal": 20,
-    "England": 15,
-    "Scotland": 10,
-    "Norway": 5,
-    "Sweden": 5,
-    "Novgorod": 5,
-    "Lithuania": 10,
-    "Poland": 15,
-    "Hungary": 15,
-    "Bulgaria": 15,
-    "Byzantium": 20,
-    "Serbia": 15,
-    "Naples": 20,
-    "Papal States": 20,
+    "Holy Roman Empire": 14, // Uses Bavaria as a reference
+    "France": 11, // Uses Paris as a reference
+    "Castile": 20, // Uses Madrid as a reference
+    "Portugal": 12, // Uses Lisbon as a reference
+    "England": 11, // Uses London as a reference
+    "Scotland":7, // Uses Glasgow as a reference
+    "Norway": 2, // Uses Oslo as a reference
+    "Sweden": 3, // Uses Stockholm as a reference
+    "Novgorod": 0, // Uses St. Petersburg as a reference
+    "Lithuania": 8, // Uses Vilnius as a reference
+    "Poland": 9, // Uses Warsaw as a reference
+    "Hungary": 15, // Uses Budapest as a reference
+    "Bulgaria": 13, // Uses Sofia as a reference
+    "Byzantium": 16, // Uses Athens as a reference
+    "Serbia": 10, // Uses Belgrade as a reference
+    "Kingdom of Naples": 17, // Uses Naples as a reference
+    "Papal States": 14 // Uses Vatican City as a reference
 }
 
 let precipitationLookup = {
@@ -95,6 +95,26 @@ let windLookup = {
     "Cooling" : 0.3,
     "Gusty" : 0.15,
     "Straightline" : 0.05
+}
+
+let distanceLookup = {
+    "Holy Roman Empire": 846, // HRE to France
+    "France": 1275, // France to Spain
+    "Castile": 625, // Spain to Portugal
+    "Portugal": 2189, // Portugal to England (by water)
+    "England": 415, // England to Scotland
+    "Scotland": 995, // Scotland to Norway
+    "Norway": 557, // Norway to Sweden
+    "Sweden": 866, // Sweden to Novgorod
+    "Novgorod": 722, // Novgorod to Lithuania
+    "Lithuania": 524, // Lithuania to Poland
+    "Poland": 859, // Poland to Hungary
+    "Hungary": 770, // Hungary to Bulgaria
+    "Bulgaria": 791, // Bulgaria to Byzantium
+    "Byzantium": 1095, // Byzantium to Serbia
+    "Serbia": 740, // Serbia to Kingdom of Naples
+    "Kingdom of Naples": 244, // Kingdom of Naples to Papal States
+    "Papal States": 890 // Papal States to HRE
 }
 // #endregion
 
@@ -181,7 +201,7 @@ if (sessionStorage.getItem("distance")) {
     distance = JSON.parse(sessionStorage.getItem("distance"))
 }
 else {
-    distance = 1000
+    distance = distanceLookup[country]
 }
 
 let pace
@@ -198,6 +218,30 @@ if (sessionStorage.getItem("date")) {
 }
 else {
     date = {day:1,month:10,year:1347}
+}
+
+let obstacle
+if (sessionStorage.getItem("obstacle")) {
+    obstacle = JSON.parse(sessionStorage.getItem("obstacle"))
+}
+else {
+    obstacle = "river" // Player needs to cross the Rhine as the first obstacle
+}
+
+let paceMultiplier
+if (sessionStorage.getItem("pacemultiplier")) {
+    paceMultiplier = JSON.parse(sessionStorage.getItem("pacemultiplier"))
+}
+else {
+    paceMultiplier = 1.0
+}
+
+let foodMultiplier
+if (sessionStorage.getItem("foodmultiplier")) {
+    foodMultiplier = JSON.parse(sessionStorage.getItem("foodmultiplier"))
+}
+else {
+    foodMultiplier = 1.0
 }
 // #endregion
 
@@ -286,32 +330,48 @@ function changeJobMoney(job) {
 function changeInitialSeason(chosenSeason) {
     season = chosenSeason
     if (chosenSeason == "winter") {
-        seasonTemp = 0
-        date = "1/1/1347"
+        temperature = winterTempLookup[country]
+
+        date = {day:1,month:1,year:1347}
+
+        foodMultiplier = 0.5
+
         document.getElementById("winteroption").style.color = "royalblue"
         document.getElementById("springoption").style.color = "white"
         document.getElementById("summeroption").style.color = "white"
         document.getElementById("falloption").style.color = "white"
     }
     else if (chosenSeason == "spring") {
-        seasonTemp = 15
-        date = "1/4/1347"
+        temperature = springTempLookup[country]
+
+        date = {day:1,month:4,year:1347}
+
+        foodMultiplier = 1.2
+
         document.getElementById("winteroption").style.color = "white"
         document.getElementById("springoption").style.color = "hotpink"
         document.getElementById("summeroption").style.color = "white"
         document.getElementById("falloption").style.color = "white"
     }
     else if (chosenSeason == "summer") {
-        seasonTemp = 20
-        date = "1/7/1347"
+        temperature = summerTempLookup[country]
+
+        date = {day:1,month:7,year:1347}
+
+        foodMultiplier = 1.0
+
         document.getElementById("winteroption").style.color = "white"
         document.getElementById("springoption").style.color = "white"
         document.getElementById("summeroption").style.color = "orange"
         document.getElementById("falloption").style.color = "white"
     }
     else {
-        seasonTemp = 10
-        date = "1/10/1347"
+        temperature = fallTempLookup[country]
+
+        date = {day:1,month:10,year:1347}
+
+        foodMultiplier = 1.5
+
         document.getElementById("winteroption").style.color = "white"
         document.getElementById("springoption").style.color = "white"
         document.getElementById("summeroption").style.color = "white"
@@ -585,3 +645,4 @@ function determineOverallHealth() {
 function logAValue() {
     console.log(playerParty)
 }
+
