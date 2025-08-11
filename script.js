@@ -118,6 +118,11 @@ let distanceLookup = {
 }
 // #endregion
 
+// #region Events
+let summerEvents = [
+    "A nearby village is willing to trade 150 marc of food for your services (2 marc of herbs). Accept?"
+]
+// #endregion
 
 // #region Anything that needs to be grabbed from sessionStorage
 // Establish player
@@ -228,21 +233,9 @@ else {
     obstacle = "river" // Player needs to cross the Rhine as the first obstacle
 }
 
-let paceMultiplier
-if (sessionStorage.getItem("pacemultiplier")) {
-    paceMultiplier = JSON.parse(sessionStorage.getItem("pacemultiplier"))
-}
-else {
-    paceMultiplier = 1.0
-}
+let paceMultiplier = 1.0
 
-let foodMultiplier
-if (sessionStorage.getItem("foodmultiplier")) {
-    foodMultiplier = JSON.parse(sessionStorage.getItem("foodmultiplier"))
-}
-else {
-    foodMultiplier = 1.0
-}
+let foodMultiplier = 1.0
 // #endregion
 
 // Button on story screen
@@ -460,12 +453,12 @@ function initializeGameloop() {
 function populateTables() {
     // Date
     const dateCell = document.getElementById("showdate")
-    console.log(date["day"], date["month"], date["year"])
     dateCell.innerHTML = String(date["day"]) + "/" + String(date["month"]) + "/" + String(date["year"])
 
     // Season
     const seasonCell = document.getElementById("showseason")
     seasonCell.innerHTML = season.charAt(0).toUpperCase() + season.slice(1)
+    determineFoodMultiplier(season)
 
     // Temperature
     const temperatureCell = document.getElementById("showtemperature")
@@ -557,12 +550,15 @@ function determineTemperature(currentSeason,currentCountry) {
 function determinePrecipitation() {
     const weatherDiceroll = Math.random()
     if ((weatherDiceroll < precipitationLookup["Snowy"]) && (temperature < 0)) {
+        paceMultiplier -= 0.5
         return "Snowy"
     }
     else if (weatherDiceroll < precipitationLookup["Stormy"]) {
+        paceMultiplier -= 0.75
         return "Stormy"
     }
     else if (weatherDiceroll < precipitationLookup["Rainy"]) {
+        paceMultiplier -= 0.25
         return "Rainy"
     }
     else {
@@ -580,15 +576,19 @@ function determineWind(currentPrecipitation) {
     }
     
     if (windDiceroll < windLookup["Straightline"]) {
+        paceMultiplier -= 0.5
         return "Straightline"
     }
     else if (windDiceroll < windLookup["Gusty"]) {
+        paceMultiplier += 0.25
         return "Gusty"
     }
     else if (windDiceroll < windLookup["Cooling"]) {
+        paceMultiplier += 0.5
         return "Cooling"
     }
     else {
+        paceMultiplier += 1.0
         return "Calm"
     }
 }
@@ -596,13 +596,19 @@ function determineWind(currentPrecipitation) {
 function getIndividualHealth(member) {
     // Check if the member is healthy, sick or dead
     if (playerHealth[member] == 0) {
+        paceMultiplier += 0.2
         return "Healthy"
     }
     else if (playerHealth[member] == -1) {
+        paceMultiplier -= 0.1
         return "Sick"
     }
-    else {
+    else if (playerHealth[member] == -2) {
+        paceMultiplier -= 0.2
         return "Brink of Death"
+    }
+    else {
+        return "Dead"
     }
 }
 
@@ -641,8 +647,190 @@ function determineOverallHealth() {
     }
 }
 
-// For checking if values are changed
-function logAValue() {
-    console.log(playerParty)
+function determineFoodMultiplier(season) {
+    if (season == "fall") {
+        foodMultiplier += 1.0
+    }
+    else if (season == "winter") {
+        foodMultiplier -= 0.75
+    }
+    else if (season == "spring") {
+        foodMultiplier += 0.1
+    }
+    else {
+        foodMultiplier += 0.5
+    }
 }
 
+// Advance one normal day without delays
+function advanceOneDay(date,isStopped) {
+    if (!isStopped) {
+        animateWagon() // Show the wagon moving
+
+        distance = calculateRemainingDistance(pace,paceMultiplier,distance) // Calculate new distance
+
+        if (distance <= 0) {
+            if (country == "Papal States") {
+                window.location.href = "victory.html"
+            }
+            else {
+                const keys = Object.keys(distanceLookup)
+                country = keys.at(keys.indexOf(country) + 1)
+                distance = distanceLookup[country]
+            }
+        }
+
+        animateOther() // Show a checkpoint or obstacle approaching
+
+        selectEvent(season,playerParty,false) // See if an event occurs, party can be delayed
+    }
+    else {
+        selectEvent(season,playerParty,true) // See if another event occurs, delay cannot be lengthened
+    }
+
+    advanceDate(date) // Move date one day forward and change month/year if needed
+
+    season = updateSeason(date) // Update season
+
+    consumeFood(rations,playerItems,playerHealth,playerParty) // Consume food based on rations
+
+    populateTables() // Fill in tables once everything is complete
+}
+
+// Advance through a delay without moving
+function advanceMultipleDays(date,delayLength) {
+    let i = 0
+        
+    let intervalID = setInterval(function() {
+        i += 1;
+
+        if ( i == delayLength) {
+        clearInterval(intervalID)
+        };
+
+        advanceOneDay(date,true)},1000)
+}
+
+function animateWagon() {
+
+}
+
+function animateOther() {
+
+}
+
+function advanceDate(date) {
+    date["day"] += 1
+    if ([1,3,5,7,8,10,12].includes(date["month"]) && date["day"] >= 32) {
+        if (date["month"] == 12) { // New Year's Eve to New Year's Day
+            date["month"] = 1
+            date["day"] = 1
+            date["year"] += 1
+        }
+        else {
+            date["month"] += 1
+            date["day"] = 1   
+        }
+    }
+    else if ([4,6,9,11].includes(date["month"]) && date["day"] > 30) {
+        date["month"] += 1
+        date["day"] = 1
+    }
+    else if (date["year"] % 4 != 0 && date["day"] > 28 && date["month"] == 2) { // Non-leap day
+            date["month"] += 1
+            date["day"] = 1
+        }
+    else if (date["year"] % 4 == 0 && date["day"] > 29 && date["month"] == 2) { // Leap day
+            date["month"] += 1
+            date["day"] = 1
+        }
+    else {}
+}
+
+function updateSeason(date) {
+    if ([1,2,3].includes(date["month"])) {
+        return "winter"
+    }
+    else if ([4,5,6].includes(date["month"])) {
+        return "spring"
+    }
+    else if ([7,8,9].includes(date["month"])) {
+        return "summer"
+    }
+    else {
+        return "fall"
+    }
+}
+
+function calculateRemainingDistance(currentPace,multiplier,distanceRemaining) {
+    let newDistance
+
+    if (currentPace == "Grueling") {
+        newDistance = distanceRemaining - Math.round(25 * (1.0 + multiplier))
+    }
+    else if (currentPace == "Leisurely") {
+        newDistance = distanceRemaining - Math.round(6 * (1.0 + multiplier))
+    }
+    else {
+        newDistance = distanceRemaining - Math.round(12 * (1.0 + multiplier))
+    }
+
+    // Make sure party doesn't go backwards
+    if (newDistance > distanceRemaining) {
+        console.log("Using same distance")
+        return distanceRemaining
+    }
+    else {
+        console.log("Using new distance")
+        return newDistance
+    }
+}
+
+function selectEvent(currentSeason,currentParty,isStopped) {
+
+}
+
+function consumeFood(currentRations,currentItems,currentHealth,currentParty) {
+    let foodEaten = 0
+    let foodPerPerson = 4
+
+    if (currentRations == "Filling") {
+        foodPerPerson = 4
+    }
+    else if (currentRations == "Meager") {
+        foodPerPerson = 2
+    }
+    else {
+        foodPerPerson = 1
+    }
+
+    for (const member in currentParty) {
+        if (member != "") {
+            foodEaten += foodPerPerson
+        }
+    }
+
+    if (currentItems["food"] < foodEaten) {
+        currentItems["food"] = 0
+
+        let hurt = Math.floor(Math.random() * 5) + 1 // 1 in 5 chance of hurting a family member
+        if (hurt == 1) {
+            let hurtMember = Object.keys(currentParty)[Math.floor(Math.random() * Object.keys(currentParty).length)]
+            currentHealth[hurtMember] -= 1 // Hurt the member
+
+            if (currentHealth[hurtMember] == -2) {
+                currentHealth[hurtMember] = -3 // Set to dead
+                if (hurtMember == "player") {
+                    alert("You have died of starvation!")
+                    window.location.href = "game_over.html"
+                }
+                else {
+                    alert(currentParty[hurtMember] + " has died of starvation!")
+                }
+            }
+        }
+    }
+    else {
+        currentItems["food"] -= foodEaten
+    }
+}
