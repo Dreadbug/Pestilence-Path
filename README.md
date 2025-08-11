@@ -9,11 +9,11 @@ Taking inspiration from the classic Oreegon Trail games, this project would have
 
 **Adaptive Pace:** The weather and player's health will determine how far the player can go in a given day.
 
-**Dynamic Difficulty:** The difficulty will fluctuate as the player moves thorugh the seasons. Random events will also becoem more harsh as supplies dwindle and health runs out.
+**Dynamic Difficulty:** The difficulty will fluctuate as the player moves thorugh the seasons. Random events will also become more harsh as supplies dwindle and health runs out.
 
-**Better Hunting Controls:** I have always found the hunting controls in Oregon Trail to be rather cumbersome, and plan to implement traditional WASD controls.
+**Better Hunting Controls:** I have always found the hunting controls in Oregon Trail to be rather cumbersome, and plan to implement traditional WASD and mouse controls.
 
-**Old-English Mode:** Places the entire game in Shakespearean-style English.
+**Old-English Mode:** Places the entire game in Shakespearean-style English. This is just an idea and may not actually be implemented.
 
 **The Plague:** Takes the place of dysentery. The player is a plague doctor that mut cure patients across Europe. However, the player and their party are exposed to it.
 
