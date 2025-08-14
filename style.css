@@ -68,6 +68,72 @@ body {
 .gameloop-container {
     display: grid;
     align-content: center;
-    grid-template-columns: 195px 200px;
-    font-size: 40px;
+    grid-template-columns: 160px 235px;
+    font-size: 30px;
+}
+
+.game-option-button {
+    border-color: white;
+    border-style: solid;
+    background-color: black;
+    color: white;
+    font-family: 'Manufacturing Consent','Brush Script MT';
+    font-size: 25px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.game-option-button:disabled {
+    border-color: red;
+    color: red;
+}
+
+.yes-button {
+    border-color: white;
+    border-style: solid;
+    background-color: black;
+    color: white;
+    font-family: 'Manufacturing Consent','Brush Script MT';
+    font-size: 35px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    position: absolute;
+    top: 1.5%;
+    right: 4.5%;
+}
+
+.no-button {
+    border-color: white;
+    border-style: solid;
+    background-color: black;
+    color: white;
+    font-family: 'Manufacturing Consent','Brush Script MT';
+    font-size: 35px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    position: absolute;
+    top: 1.5%;
+    right: 0.5%;
+}
+
+.proceed-button {
+    border-color: white;
+    border-style: solid;
+    background-color: black;
+    color: white;
+    font-family: 'Manufacturing Consent','Brush Script MT';
+    font-size: 35px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    position: absolute;
+    top: 1.5%;
+    right: 0.5%;
 }
