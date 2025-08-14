@@ -119,9 +119,45 @@ let distanceLookup = {
 // #endregion
 
 // #region Events
-let summerEvents = [
-    "A nearby village is willing to trade 150 marc of food for your services (2 marc of herbs). Accept?"
-]
+let summerEvents = {
+    "A nearby village is willing to trade 150 marc of their harvest for your services (8 marc of herbs). Accept?" : {"food" : 150,"herbs" : -8},
+    "The budding harvest has attracted locusts. Lose 20 marc of food." : {"food" : -20},
+    "You see a good omen in the sky as the sun sets. Gain 20 pf." : {"money" : 20},
+    "You see a bad omen in the sky as the midnight sun sets. Your party feels uneasy." : {"hurt" : 4},
+    "A blistering heatwave keeps your party from going any further. Lose 7 days." : {"delay" : 7},
+}
+
+let fallEvents = {
+    "A nearby village is willing to trade 150 marc of their harvest for your services (8 marc of herbs). Accept?" : {"food" : 150,"herbs" : -8},
+    "The budding harvest has attracted locusts. Lose 20 marc of food." : {"food" : -20},
+    "You see a good omen in the sky as the sun sets. Gain 20 pf." : {"money" : 20},
+    "You see a bad omen in the sky as the midnight sun sets. Your party feels uneasy." : {"hurt" : 4},
+    "A blistering heatwave keeps your party from going any further. Lose 7 days." : {"delay" : 7},
+}
+
+let winterEvents = {
+    "A nearby village is willing to trade 150 marc of their harvest for your services (8 marc of herbs). Accept?" : {"food" : 150,"herbs" : -8},
+    "The budding harvest has attracted locusts. Lose 20 marc of food." : {"food" : -20},
+    "You see a good omen in the sky as the sun sets. Gain 20 pf." : {"money" : 20},
+    "You see a bad omen in the sky as the midnight sun sets. Your party feels uneasy." : {"hurt" : 4},
+    "A blistering heatwave keeps your party from going any further. Lose 7 days." : {"delay" : 7},
+}
+
+let springEvents = {
+    "A nearby village is willing to trade 150 marc of their harvest for your services (8 marc of herbs). Accept?" : {"food" : 150,"herbs" : -8},
+    "The budding harvest has attracted locusts. Lose 20 marc of food." : {"food" : -20},
+    "You see a good omen in the sky as the sun sets. Gain 20 pf." : {"money" : 20},
+    "You see a bad omen in the sky as the midnight sun sets. Your party feels uneasy." : {"hurt" : 4},
+    "A blistering heatwave keeps your party from going any further. Lose 7 days." : {"delay" : 7},
+}
+
+let generalEvents = {
+    "A nearby village is willing to trade 150 marc of their harvest for your services (8 marc of herbs). Accept?" : {"food" : 150,"herbs" : -8},
+    "The budding harvest has attracted locusts. Lose 20 marc of food." : {"food" : -20},
+    "You see a good omen in the sky as the sun sets. Gain 20 pf." : {"money" : 20},
+    "You see a bad omen in the sky as the midnight sun sets. Your party feels uneasy." : {"hurt" : 4},
+    "A blistering heatwave keeps your party from going any further. Lose 7 days." : {"delay" : 7},
+}
 // #endregion
 
 // #region Anything that needs to be grabbed from sessionStorage
@@ -236,6 +272,8 @@ else {
 let paceMultiplier = 1.0
 
 let foodMultiplier = 1.0
+
+let eventDifficulty = 1.0
 // #endregion
 
 // Button on story screen
@@ -391,11 +429,11 @@ function calculateBill() {
     let totalBill = (food * 1) + (arrows * 5) + (herbs * 10) + (wheel * 30) + (axle * 30) + (tongue * 30) + (clothes * 15) + (oxen * 50)
 
     if ((playerItems["money"] - totalBill) < 0) {
-        alert("You do not have enough money to pay for this bill! Please reduce your purchases.")
+        document.getElementById("moneyavailable").innerHTML = "Not enough money! Please reduce your purchases!"
         return
     }
     else {
-        document.getElementById("moneyavailable").innerHTML = playerItems["money"] - totalBill
+        document.getElementById("moneyavailable").innerHTML = "You have " + String(playerItems["money"] - totalBill) + " pf left to spend!"
     }
 }
 
@@ -413,7 +451,7 @@ function finishPurchase() {
     let totalBill = (food * 1) + (arrows * 5) + (herbs * 10) + (wheel * 30) + (axle * 30) + (tongue * 30) + (clothes * 15) + (oxen * 50)
 
     if ((playerItems["money"] - totalBill) < 0) {
-        alert("You do not have enough money to pay for this bill! Please reduce your purchases.")
+        document.getElementById("moneyavailable").innerHTML = "Not enough money! Please reduce your purchases!"
         return
     }
     else {
@@ -441,9 +479,32 @@ function initializeGameloop() {
     const gameCanvas = document.getElementById("gamecanvas")
     gameCanvas.width = window.innerWidth
     gameCanvas.height = window.innerHeight
+
     const ctx = gameCanvas.getContext("2d")
-    ctx.fillStyle = "red"
-    ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height)
+
+    // Fill back of canvas with black
+    ctx.fillStyle = "black"
+    ctx.fillRect(0,0,gameCanvas.width,gameCanvas.height)
+
+    // Fill in ground with seasonal color
+    if (season == "winter") {
+        ctx.fillStyle = "#1C9E66"
+    }
+    else if (season == "spring") {
+        ctx.fillStyle = "#1C9E20"
+    }
+    else if (season == "summer") {
+        ctx.fillStyle = "#759E1C"
+    }
+    else {
+        ctx.fillStyle = "#9E541C"
+    }
+    ctx.fillRect(0,gameCanvas.height - 300,gameCanvas.width,300)
+
+    // Fill in GUI area, eventually this will be textured instead of solid colors
+    ctx.fillStyle = "#DED36D"
+    ctx.fillRect(0,0,420,gameCanvas.height)
+    ctx.fillRect(0,gameCanvas.height-175,gameCanvas.width,175)
 
     // Fill in tables with player info
     populateTables()
@@ -451,6 +512,8 @@ function initializeGameloop() {
 
 
 function populateTables() {
+    paceMultiplier = 1.0 // Reset pacemultiplier
+
     // Date
     const dateCell = document.getElementById("showdate")
     dateCell.innerHTML = String(date["day"]) + "/" + String(date["month"]) + "/" + String(date["year"])
@@ -458,6 +521,7 @@ function populateTables() {
     // Season
     const seasonCell = document.getElementById("showseason")
     seasonCell.innerHTML = season.charAt(0).toUpperCase() + season.slice(1)
+    eventDifficulty = resetEventDifficulty(season) // Reset event difficulty by season
     determineFoodMultiplier(season)
 
     // Temperature
@@ -476,6 +540,10 @@ function populateTables() {
     const distanceCell = document.getElementById("showdistance")
     distanceCell.innerHTML = String(distance) + " km"
 
+    // Country
+    const countryCell = document.getElementById("showcountry")
+    countryCell.innerHTML = String(country)
+    
     // Pace
     const paceCell = document.getElementById("showpace")
     paceCell.innerHTML = pace
@@ -519,6 +587,7 @@ function populateTables() {
     sonHealthCell.innerHTML = getIndividualHealth("son")
 }
 
+// #region Group of functions that return what to put in gameloop fields
 // Group of functions that return what to put in gameloop fields
 // Need to make difficulty adjustemnts within them still
 // Ex. stormy weather and straightline winds should make travelling harder, and thus reduce distance travelled
@@ -544,21 +613,30 @@ function determineTemperature(currentSeason,currentCountry) {
     // Modify base temp by a random amount
     const modifier = Math.floor(Math.random() * 10) -5
 
-    return baseTemperature + modifier
+    let fullTemp = baseTemperature + modifier
+
+    if (fullTemp > 27 || fullTemp < 10) {
+        eventDifficulty += 0.2
+    }
+
+    return fullTemp
 }
 
 function determinePrecipitation() {
     const weatherDiceroll = Math.random()
     if ((weatherDiceroll < precipitationLookup["Snowy"]) && (temperature < 0)) {
         paceMultiplier -= 0.5
+        eventDifficulty += 0.3
         return "Snowy"
     }
     else if (weatherDiceroll < precipitationLookup["Stormy"]) {
         paceMultiplier -= 0.75
+        eventDifficulty += 0.2
         return "Stormy"
     }
     else if (weatherDiceroll < precipitationLookup["Rainy"]) {
         paceMultiplier -= 0.25
+        eventDifficulty += 0.1
         return "Rainy"
     }
     else {
@@ -577,18 +655,22 @@ function determineWind(currentPrecipitation) {
     
     if (windDiceroll < windLookup["Straightline"]) {
         paceMultiplier -= 0.5
+        eventDifficulty += 0.2
         return "Straightline"
     }
     else if (windDiceroll < windLookup["Gusty"]) {
         paceMultiplier += 0.25
+        eventDifficulty += 0.1
         return "Gusty"
     }
     else if (windDiceroll < windLookup["Cooling"]) {
         paceMultiplier += 0.5
+        eventDifficulty -= 0.1
         return "Cooling"
     }
     else {
         paceMultiplier += 1.0
+        eventDifficulty -= 0.2
         return "Calm"
     }
 }
@@ -662,12 +744,33 @@ function determineFoodMultiplier(season) {
     }
 }
 
+function resetEventDifficulty(season) {
+    switch (season) {
+        case "summer":
+            return 1.0
+        
+        case "spring":
+            return 0.7
+        
+        case "winter":
+            return 1.5
+        
+        default:
+            return 0.5
+    }
+}
+// #endregion
+
+// #region The regular gameloop
 // Advance one normal day without delays
+let alreadyHasEvent = false
 function advanceOneDay(date,isStopped) {
+    let event = "none"
+
     if (!isStopped) {
         animateWagon() // Show the wagon moving
 
-        distance = calculateRemainingDistance(pace,paceMultiplier,distance) // Calculate new distance
+        distance = calculateRemainingDistance(playerItems["oxen"],pace,paceMultiplier,distance) // Calculate new distance
 
         if (distance <= 0) {
             if (country == "Papal States") {
@@ -682,10 +785,19 @@ function advanceOneDay(date,isStopped) {
 
         animateOther() // Show a checkpoint or obstacle approaching
 
-        selectEvent(season,playerParty,false) // See if an event occurs, party can be delayed
+        event = selectEventType() // See if an event occurs, party can be delayed
+
+        alreadyHasEvent = false
     }
     else {
-        selectEvent(season,playerParty,true) // See if another event occurs, delay cannot be lengthened
+        if (!alreadyHasEvent) {
+            event = selectEventType() // See if another event occurs, delay cannot be lengthened
+            alreadyHasEvent = true
+        }
+    }
+
+    if (event != "none") {
+        displayEvent(event,season,isStopped)
     }
 
     advanceDate(date) // Move date one day forward and change month/year if needed
@@ -717,6 +829,22 @@ function animateWagon() {
 
 function animateOther() {
 
+}
+
+function updatePace(newPace) {
+    pace = newPace
+
+    // Pace
+    const paceCell = document.getElementById("showpace")
+    paceCell.innerHTML = pace
+}
+
+function updateRations(newRations) {
+    rations = newRations
+
+    // Rations
+    const rationsCell = document.getElementById("showrations")
+    rationsCell.innerHTML = rations
 }
 
 function advanceDate(date) {
@@ -762,32 +890,225 @@ function updateSeason(date) {
     }
 }
 
-function calculateRemainingDistance(currentPace,multiplier,distanceRemaining) {
+function calculateRemainingDistance(numOxen,currentPace,multiplier,distanceRemaining) {
     let newDistance
 
     if (currentPace == "Grueling") {
-        newDistance = distanceRemaining - Math.round(25 * (1.0 + multiplier))
+        newDistance = distanceRemaining - Math.round(8 * (1.0 + multiplier) + 2 * numOxen)
     }
     else if (currentPace == "Leisurely") {
-        newDistance = distanceRemaining - Math.round(6 * (1.0 + multiplier))
+        newDistance = distanceRemaining - Math.round(2 * (1.0 + multiplier) + 2 * numOxen)
     }
     else {
-        newDistance = distanceRemaining - Math.round(12 * (1.0 + multiplier))
+        newDistance = distanceRemaining - Math.round(4 * (1.0 + multiplier) + 2 * numOxen)
     }
 
     // Make sure party doesn't go backwards
     if (newDistance > distanceRemaining) {
-        console.log("Using same distance")
         return distanceRemaining
     }
     else {
-        console.log("Using new distance")
         return newDistance
     }
 }
 
-function selectEvent(currentSeason,currentParty,isStopped) {
+function selectEventType() {
+    const eventDiceroll = Math.random()
 
+    if (eventDiceroll <= 0.2 && eventDiceroll > 0.1) { // Nonseasonal event
+        return "nonseasonal"
+    }
+    else if (eventDiceroll <= 0.1) { // Seasonal event
+        return "seasonal"
+    }
+    else {
+        return "none"
+    }
+}
+
+function displayEvent(eventType,currentSeason,isStopped) {
+    let eventOutcome
+    let eventText
+    let eventList
+
+    // Get event list and randomly select an event
+    if (eventType == "seasonal") {
+        if (currentSeason == "summer") {
+            eventList = summerEvents
+            if (isStopped) {
+                eventOutcome = summerEvents[Object.keys(summerEvents)[Math.floor(Math.random() * (Object.keys(summerEvents).length - 1))]]
+            }
+            else {
+                eventOutcome = summerEvents[Object.keys(summerEvents)[Math.floor(Math.random() * Object.keys(summerEvents).length)]]
+            }
+        }
+        else if (currentSeason == "fall") {
+            eventList = fallEvents
+            if (isStopped) {
+                eventOutcome = fallEvents[Object.keys(fallEvents)[Math.floor(Math.random() * (Object.keys(fallEvents).length - 1))]]
+            }
+            else {
+                eventOutcome = fallEvents[Object.keys(fallEvents)[Math.floor(Math.random() * Object.keys(fallEvents).length)]]
+            }
+        }
+        else if (currentSeason == "winter") {
+            eventList = winterEvents
+            if (isStopped) {
+                eventOutcome = winterEvents[Object.keys(winterEvents)[Math.floor(Math.random() * (Object.keys(winterEvents).length - 1))]]
+            }
+            else {
+                eventOutcome = winterEvents[Object.keys(winterEvents)[Math.floor(Math.random() * Object.keys(winterEvents).length)]]
+            }
+        }
+        else {
+            eventList = springEvents
+            if (isStopped) {
+                eventOutcome = springEvents[Object.keys(springEvents)[Math.floor(Math.random() * (Object.keys(springEvents).length - 1))]]
+            }
+            else {
+                eventOutcome = springEvents[Object.keys(springEvents)[Math.floor(Math.random() * Object.keys(springEvents).length)]]
+            }
+        }
+    }
+    else {
+        eventList = generalEvents
+
+        // Need to make table for nonseasonal events
+        if (isStopped) {
+            eventOutcome = generalEvents[Object.keys(generalEvents)[Math.floor(Math.random() * (Object.keys(generalEvents).length - 1))]]
+        }
+        else {
+            eventOutcome = generalEvents[Object.keys(generalEvents)[Math.floor(Math.random() * Object.keys(generalEvents).length)]]
+        }
+    }
+
+    // Get the text for the event by getting the key from the outcome (value)
+    eventText = Object.keys(eventList).find(key => eventList[key] === eventOutcome)
+
+    // Disable other buttons
+    document.getElementById("barebones").disabled = true
+    document.getElementById("meager").disabled = true
+    document.getElementById("filling").disabled = true
+    document.getElementById("leisurely").disabled = true
+    document.getElementById("normal").disabled = true
+    document.getElementById("grueling").disabled = true
+    document.getElementById("onward").disabled = true
+
+    // Prototype window
+    const canvas = document.getElementById("gamecanvas")
+    const ctx = canvas.getContext("2d")
+
+    ctx.fillStyle = "black"
+    ctx.fillRect(430,0,canvas.width-450,75)
+
+    ctx.fillStyle = "white"
+    ctx.font = "35px Manufacturing Consent"
+    ctx.fillText(eventText,445,47)
+
+    if (eventText.endsWith("Accept?")) {
+        // Add yes button
+        const yesButton = document.createElement("button")
+        yesButton.id = "yesbutton"
+        yesButton.textContent = "Yes"
+        yesButton.classList.add("yes-button")
+        yesButton.addEventListener("click",function() {
+            applyEvent(eventOutcome)
+        })
+        document.getElementById("addbuttonhere").appendChild(yesButton)
+
+        // Add no button
+        const noButton = document.createElement("button")
+        noButton.id = "nobutton"
+        noButton.textContent = "No"
+        noButton.classList.add("no-button")
+        noButton.addEventListener("click",function() {
+            applyEvent("none")
+        })
+        document.getElementById("addbuttonhere").appendChild(noButton)
+    }
+    else {
+        // Add proceed button
+        const proceedButton = document.createElement("button")
+        proceedButton.id = "proceedbutton"
+        proceedButton.textContent = "Proceed"
+        proceedButton.classList.add("proceed-button")
+        proceedButton.addEventListener("click",function() {
+            applyEvent(eventOutcome)
+        })
+        document.getElementById("addbuttonhere").appendChild(proceedButton)
+    }
+}
+
+function applyEvent(effect) {
+    // Apply event using if/else, switch case could also work but would be longer
+    if (JSON.stringify(Object.keys(effect)).includes("food")) {
+        playerItems["food"] = (playerItems["food"] + effect["food"] > 0) ? playerItems["food"] + effect["food"] : 0
+    }
+    if (JSON.stringify(Object.keys(effect)).includes("arrows")) {
+        playerItems["arrows"] = (playerItems["arrows"] + effect["arrows"] > 0) ? playerItems["arrows"] + effect["arrows"] : 0
+    }
+    if (JSON.stringify(Object.keys(effect)).includes("money")) {
+        playerItems["money"] = (playerItems["money"] + effect["money"] > 0) ? playerItems["money"] + effect["money"] : 0
+    }
+    if (JSON.stringify(Object.keys(effect)).includes("herbs")) {
+        playerItems["herbs"] = (playerItems["herbs"] + effect["herbs"] > 0) ? playerItems["herbs"] + effect["herbs"] : 0
+    }
+    if (JSON.stringify(Object.keys(effect)).includes("wheel")) {
+        playerItems["wheel"] = (playerItems["wheel"] + effect["wheel"] > 0) ? playerItems["wheel"] + effect["wheel"] : 0
+    }
+    if (JSON.stringify(Object.keys(effect)).includes("axle")) {
+        playerItems["axle"] = (playerItems["axle"] + effect["axle"] > 0) ? playerItems["axle"] + effect["axle"] : 0
+    }
+    if (JSON.stringify(Object.keys(effect)).includes("tongue")) {
+        playerItems["tongue"] = (playerItems["tongue"] + effect["tongue"] > 0) ? playerItems["tongue"] + effect["tongue"] : 0
+    }
+    if (JSON.stringify(Object.keys(effect)).includes("clothes")) {
+        playerItems["clothes"] = (playerItems["clothes"] + effect["clothes"] > 0) ? playerItems["clothes"] + effect["clothes"] : 0
+    }
+    if (JSON.stringify(Object.keys(effect)).includes("oxen")) {
+        playerItems["oxen"] = (playerItems["oxen"] + effect["oxen"] > 0) ? playerItems["oxen"] + effect["oxen"] : 0
+    }
+    if (JSON.stringify(Object.keys(effect)).includes("delay")) {
+        advanceMultipleDays(date,effect["delay"])
+    }
+    if (JSON.stringify(Object.keys(effect)).includes("hurt")) {
+        for (let i = 0; i < effect["hurt"]; i++) {
+            const chosenPerson = Object.keys(playerParty)[Math.floor(Math.random() * Object.keys(playerParty).length)]
+            playerHealth[chosenPerson] -= 1
+        }
+    }
+
+    // Clear out buttons and text
+    const canvas = document.getElementById("gamecanvas")
+    const ctx = canvas.getContext("2d")
+
+    ctx.clearRect(430,0,canvas.width-450,75)
+    ctx.fillStyle = "black"
+    ctx.fillRect(430,0,canvas.width-450,75)
+
+    if (document.getElementById("yesbutton")) {
+        document.getElementById("yesbutton").remove()
+    }
+
+    if (document.getElementById("nobutton")) {
+        document.getElementById("nobutton").remove()
+    }
+
+    if (document.getElementById("proceedbutton")) {
+        document.getElementById("proceedbutton").remove()
+    }
+
+    // Reenable other buttons
+    document.getElementById("barebones").disabled = false
+    document.getElementById("meager").disabled = false
+    document.getElementById("filling").disabled = false
+    document.getElementById("leisurely").disabled = false
+    document.getElementById("normal").disabled = false
+    document.getElementById("grueling").disabled = false
+    document.getElementById("onward").disabled = false
+
+    populateTables()
+    alreadyHasEvent = false
 }
 
 function consumeFood(currentRations,currentItems,currentHealth,currentParty) {
@@ -818,14 +1139,61 @@ function consumeFood(currentRations,currentItems,currentHealth,currentParty) {
             let hurtMember = Object.keys(currentParty)[Math.floor(Math.random() * Object.keys(currentParty).length)]
             currentHealth[hurtMember] -= 1 // Hurt the member
 
-            if (currentHealth[hurtMember] == -2) {
-                currentHealth[hurtMember] = -3 // Set to dead
+            if (currentHealth[hurtMember] == -3) {
+                // Disable other buttons
+                document.getElementById("barebones").disabled = true
+                document.getElementById("meager").disabled = true
+                document.getElementById("filling").disabled = true
+                document.getElementById("leisurely").disabled = true
+                document.getElementById("normal").disabled = true
+                document.getElementById("grueling").disabled = true
+                document.getElementById("onward").disabled = true
+
+                const canvas = document.getElementById("gamecanvas")
+                const ctx = canvas.getContext("2d")
+
+                ctx.fillStyle = "black"
+                ctx.fillRect(430,0,canvas.width-450,75)
+
+                ctx.fillStyle = "white"
+                ctx.font = "35px Manufacturing Consent"
+
                 if (hurtMember == "player") {
-                    alert("You have died of starvation!")
-                    window.location.href = "game_over.html"
+                    ctx.fillText("You have died of starvation!",445,47)
+
+                    // Add proceed button
+                    const proceedButton = document.createElement("button")
+                    proceedButton.id = "proceedbutton"
+                    proceedButton.textContent = "Proceed"
+                    proceedButton.classList.add("proceed-button")
+                    proceedButton.addEventListener("click",function() {
+                        window.location.href = "game_over.html"
+                    })
+                    document.getElementById("addbuttonhere").appendChild(proceedButton)
                 }
                 else {
-                    alert(currentParty[hurtMember] + " has died of starvation!")
+                    ctx.fillText(currentParty[hurtMember] + " has died of starvation!",445,47)
+
+                    // Add proceed button
+                    const proceedButton = document.createElement("button")
+                    proceedButton.id = "proceedbutton"
+                    proceedButton.textContent = "Proceed"
+                    proceedButton.classList.add("proceed-button")
+                    proceedButton.addEventListener("click",function() {
+                        document.getElementById("barebones").disabled = false
+                        document.getElementById("meager").disabled = false
+                        document.getElementById("filling").disabled = false
+                        document.getElementById("leisurely").disabled = false
+                        document.getElementById("normal").disabled = false
+                        document.getElementById("grueling").disabled = false
+                        document.getElementById("onward").disabled = false
+
+                        ctx.clearRect(430,0,canvas.width-450,75)
+                        ctx.fillStyle = "black"
+                        ctx.fillRect(430,0,canvas.width-450,75)
+
+                        document.getElementById("proceedbutton").remove()
+                    })
                 }
             }
         }
@@ -834,3 +1202,4 @@ function consumeFood(currentRations,currentItems,currentHealth,currentParty) {
         currentItems["food"] -= foodEaten
     }
 }
+// #endregion
