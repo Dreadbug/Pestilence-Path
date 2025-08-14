@@ -12,12 +12,13 @@
         <canvas id="gamecanvas"></canvas>
         <div class="main-center" style="font-size: 90px;
                                         position:absolute;
-                                        left: 40%;
-                                        top: 0%;">
+                                        left: 2.5%;
+                                        top: 0%;
+                                        color: black;">
             Your Party
         </div>
         <div class="gameloop-container" style="position:absolute;
-                                        left: 2%;
+                                        left: 1%;
                                         top: 10%;">
             <div>Date:</div>
             <div id="showdate">1/10/1347</div>
@@ -29,6 +30,8 @@
             <div id="showprecipitation">None</div>
             <div>Wind:</div>
             <div id="showwind">Calm</div>
+            <div>Kingdom:</div>
+            <div id="showcountry">Holy Roman Empire</div>
             <div>Distance:</div>
             <div id="showdistance">1000 km</div>
             <div>Pace:</div>
@@ -43,8 +46,11 @@
             <div id-showmoney>100 pf</div>
         </div>
         <div class="gameloop-container" style="position:absolute;
-                                        left: 2%;
-                                        top: 77%;">
+                                        left: 1%;
+                                        bottom: 22%;
+                                        font-size: 35px;">
+            <div style="color: black;">Member:</div>
+            <div style="color: black;">Wellbeing</div>   
             <div>You:</div>
             <div id="showyou">Good</div>
             <div id="showwifename">Petra:</div>
@@ -54,12 +60,36 @@
             <div id="showsonname">Gunther:</div>
             <div id="showson">Good</div>
         </div>
-        <div>
-            <button class="title-button-1" style="position: absolute;
-                                            right: 1%;
-                                            bottom: 1%;" onclick="advanceOneDay(date,false)">Onward</button>
+        <div id="addbuttonhere">
+            <div style="position: absolute;
+                        left: 1%;
+                        bottom: 5%;
+                        font-size: 30px;">
+                Rations Options:
+                <button id="barebones" class="game-option-button" onclick="updateRations('Barebones')">Barebones</button>
+                <button id="meager" class="game-option-button" onclick="updateRations('Meager')">Meager</button>
+                <button id="filling" class="game-option-button" style="padding-left: 19px;
+                                                                    padding-right: 19px;" onclick="updateRations('Filling')">Filling</button>
+            </div>
+            <div style="position: absolute;
+                        left: 1%;
+                        bottom: 1%;
+                        font-size: 30px;">
+                Pace Options:
+                <button id="leisurely" class="game-option-button" style="margin-left: 37px;
+                                                                        padding-left: 14px;
+                                                                        padding-right: 14px;" onclick="updatePace('Leisurely')">Leisurely</button>
+                <button id="normal" class="game-option-button" style="padding-left: 12px;
+                                                                    padding-right: 12px;" onclick="updatePace('Normal')">Normal</button>
+                <button id="grueling" class="game-option-button" onclick="updatePace('Grueling')">Grueling</button>
+            </div>
+            <button id="onward" class="title-button-2" style="position: absolute;
+                                            right: 0.75%;
+                                            bottom: 1%;" 
+                                            onclick="advanceOneDay(date,false)">Onward</button>
         </div>
         <script src="script.js"></script>
     </body>
  </html>
+
 
