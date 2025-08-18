@@ -1075,6 +1075,9 @@ function applyEvent(effect) {
         for (let i = 0; i < effect["hurt"]; i++) {
             const chosenPerson = Object.keys(playerParty)[Math.floor(Math.random() * Object.keys(playerParty).length)]
             playerHealth[chosenPerson] -= 1
+            if (playerParty[chosenPerson] == "You") {
+                window.location.href = "game_over.html"
+            }
         }
     }
 
@@ -1111,6 +1114,77 @@ function applyEvent(effect) {
     alreadyHasEvent = false
 }
 
+function youCannotDoThis(item) {
+    const canvas = document.getElementById("gamecanvas")
+    const ctx = canvas.getContext("2d")
+
+    ctx.fillStyle = "black"
+    ctx.fillRect(430,0,canvas.width-450,75)
+
+    ctx.fillStyle = "white"
+    ctx.font = "35px Manufacturing Consent"
+
+    if (document.getElementById("yesbutton")) {
+        document.getElementById("yesbutton").remove()
+    }
+
+    if (document.getElementById("nobutton")) {
+        document.getElementById("nobutton").remove()
+    }
+
+    if (document.getElementById("proceedbutton")) {
+        document.getElementById("proceedbutton").remove()
+    }
+
+    let updateText
+    if (playerItems[item] > 0) {
+        updateText = "You only have " + String(playerItems[item]) + String(item) + "."
+    }
+    else {
+        updateText = "You have no more " + String(item) + "."
+    }
+
+    ctx.fillText(updateText,445,47)
+
+    // Add proceed button
+    const proceedButton = document.createElement("button")
+    proceedButton.id = "proceedbutton"
+    proceedButton.textContent = "Proceed"
+    proceedButton.classList.add("proceed-button")
+    proceedButton.addEventListener("click",function() {
+        // Clear out buttons and text
+        const canvas = document.getElementById("gamecanvas")
+        const ctx = canvas.getContext("2d")
+
+        ctx.clearRect(430,0,canvas.width-450,75)
+        ctx.fillStyle = "black"
+        ctx.fillRect(430,0,canvas.width-450,75)
+
+        if (document.getElementById("yesbutton")) {
+            document.getElementById("yesbutton").remove()
+        }
+
+        if (document.getElementById("nobutton")) {
+            document.getElementById("nobutton").remove()
+        }
+
+        if (document.getElementById("proceedbutton")) {
+            document.getElementById("proceedbutton").remove()
+        }
+
+        document.getElementById("barebones").disabled = false
+        document.getElementById("meager").disabled = false
+        document.getElementById("filling").disabled = false
+        document.getElementById("leisurely").disabled = false
+        document.getElementById("normal").disabled = false
+        document.getElementById("grueling").disabled = false
+        document.getElementById("onward").disabled = false
+
+        populateTables()
+    })
+    document.getElementById("addbuttonhere").appendChild(proceedButton)
+}
+
 function consumeFood(currentRations,currentItems,currentHealth,currentParty) {
     let foodEaten = 0
     let foodPerPerson = 4
@@ -1140,61 +1214,7 @@ function consumeFood(currentRations,currentItems,currentHealth,currentParty) {
             currentHealth[hurtMember] -= 1 // Hurt the member
 
             if (currentHealth[hurtMember] == -3) {
-                // Disable other buttons
-                document.getElementById("barebones").disabled = true
-                document.getElementById("meager").disabled = true
-                document.getElementById("filling").disabled = true
-                document.getElementById("leisurely").disabled = true
-                document.getElementById("normal").disabled = true
-                document.getElementById("grueling").disabled = true
-                document.getElementById("onward").disabled = true
-
-                const canvas = document.getElementById("gamecanvas")
-                const ctx = canvas.getContext("2d")
-
-                ctx.fillStyle = "black"
-                ctx.fillRect(430,0,canvas.width-450,75)
-
-                ctx.fillStyle = "white"
-                ctx.font = "35px Manufacturing Consent"
-
-                if (hurtMember == "player") {
-                    ctx.fillText("You have died of starvation!",445,47)
-
-                    // Add proceed button
-                    const proceedButton = document.createElement("button")
-                    proceedButton.id = "proceedbutton"
-                    proceedButton.textContent = "Proceed"
-                    proceedButton.classList.add("proceed-button")
-                    proceedButton.addEventListener("click",function() {
-                        window.location.href = "game_over.html"
-                    })
-                    document.getElementById("addbuttonhere").appendChild(proceedButton)
-                }
-                else {
-                    ctx.fillText(currentParty[hurtMember] + " has died of starvation!",445,47)
-
-                    // Add proceed button
-                    const proceedButton = document.createElement("button")
-                    proceedButton.id = "proceedbutton"
-                    proceedButton.textContent = "Proceed"
-                    proceedButton.classList.add("proceed-button")
-                    proceedButton.addEventListener("click",function() {
-                        document.getElementById("barebones").disabled = false
-                        document.getElementById("meager").disabled = false
-                        document.getElementById("filling").disabled = false
-                        document.getElementById("leisurely").disabled = false
-                        document.getElementById("normal").disabled = false
-                        document.getElementById("grueling").disabled = false
-                        document.getElementById("onward").disabled = false
-
-                        ctx.clearRect(430,0,canvas.width-450,75)
-                        ctx.fillStyle = "black"
-                        ctx.fillRect(430,0,canvas.width-450,75)
-
-                        document.getElementById("proceedbutton").remove()
-                    })
-                }
+                revivePersonPrompt(hurtMember)
             }
         }
     }
@@ -1202,5 +1222,122 @@ function consumeFood(currentRations,currentItems,currentHealth,currentParty) {
         currentItems["food"] -= foodEaten
     }
 }
+
+function revivePerson(member,proceed) {
+    if (proceed) {
+        playerHealth[member] = 0
+    }
+    else {
+        if (playerParty[member] == "You") {
+            window.location.href = "game_over.html"
+        }
+    }
+    // Clear out buttons and text
+    const canvas = document.getElementById("gamecanvas")
+    const ctx = canvas.getContext("2d")
+
+    ctx.clearRect(430,0,canvas.width-450,75)
+    ctx.fillStyle = "black"
+    ctx.fillRect(430,0,canvas.width-450,75)
+
+    if (document.getElementById("yesbutton")) {
+        document.getElementById("yesbutton").remove()
+    }
+
+    if (document.getElementById("nobutton")) {
+        document.getElementById("nobutton").remove()
+    }
+
+    if (document.getElementById("proceedbutton")) {
+        document.getElementById("proceedbutton").remove()
+    }
+
+    // Reenable other buttons
+    document.getElementById("barebones").disabled = false
+    document.getElementById("meager").disabled = false
+    document.getElementById("filling").disabled = false
+    document.getElementById("leisurely").disabled = false
+    document.getElementById("normal").disabled = false
+    document.getElementById("grueling").disabled = false
+    document.getElementById("onward").disabled = false
+
+    sessionStorage.setItem("playerHealth",JSON.stringify(playerHealth))
+
+    populateTables()
+}
+
+function revivePersonPrompt(member) {
+    let deathText
+
+    // Disable other buttons
+    document.getElementById("barebones").disabled = true
+    document.getElementById("meager").disabled = true
+    document.getElementById("filling").disabled = true
+    document.getElementById("leisurely").disabled = true
+    document.getElementById("normal").disabled = true
+    document.getElementById("grueling").disabled = true
+    document.getElementById("onward").disabled = true
+
+    const canvas = document.getElementById("gamecanvas")
+    const ctx = canvas.getContext("2d")
+
+    ctx.fillStyle = "black"
+    ctx.fillRect(430,0,canvas.width-450,75)
+
+    ctx.fillStyle = "white"
+    ctx.font = "35px Manufacturing Consent"
+
+    if (playerItems["herbs"] >= 3) {
+        console.log("Has enough")
+        if (playerParty[member] != "You") {
+            deathText = String(playerParty[member]) + " is dying! Save them? (3 marc of herbs)"
+        }
+        else{
+            deathText = "You are dying! Save yourself? (3 marc of herbs)"
+        }
+
+        // Add yes button
+        const yesButton = document.createElement("button")
+        yesButton.id = "yesbutton"
+        yesButton.textContent = "Yes"
+        yesButton.classList.add("yes-button")
+        yesButton.addEventListener("click",function() {
+            revivePerson(member,true)
+        })
+        document.getElementById("addbuttonhere").appendChild(yesButton)
+
+        // Add no button
+        const noButton = document.createElement("button")
+        noButton.id = "nobutton"
+        noButton.textContent = "No"
+        noButton.classList.add("no-button")
+        noButton.addEventListener("click",function() {
+            revivePerson(member,false)
+        })
+        document.getElementById("addbuttonhere").appendChild(noButton)
+    }
+    else {
+        console.log("Does not have enough")
+        if (playerParty[member] != "You") {
+            deathText = String(playerParty[member]) + " has died."
+        }
+        else{
+            deathText = "You have died."
+        }
+
+        // Add proceed button
+        const proceedButton = document.createElement("button")
+        proceedButton.id = "proceedbutton"
+        proceedButton.textContent = "Proceed"
+        proceedButton.classList.add("proceed-button")
+        proceedButton.addEventListener("click",function() {
+            revivePerson(member,false)
+        })
+        document.getElementById("addbuttonhere").appendChild(proceedButton)
+    }
+
+    ctx.fillText(deathText,445,47)
+}
 // #endregion
+
 
