@@ -128,11 +128,11 @@ let summerEvents = {
 }
 
 let fallEvents = {
-    "A nearby village is willing to trade 150 marc of their harvest for your services (8 marc of herbs). Accept?" : {"food" : 150,"herbs" : -8},
-    "The budding harvest has attracted locusts. Lose 20 marc of food." : {"food" : -20},
-    "You see a good omen in the sky as the sun sets. Gain 20 pf." : {"money" : 20},
-    "You see a bad omen in the sky as the midnight sun sets. Your party feels uneasy." : {"hurt" : 4},
-    "A blistering heatwave keeps your party from going any further. Lose 7 days." : {"delay" : 7},
+    "A nearby manor offers you 100 pf for an ox to plow the fields. Accept?" : {"money" : 100, "oxen" : -1},
+    "A will o' the wisp appears in front of your party. You follow it to an old war stash. Gain 20 arrows" : {"arrows" : 20},
+    "A nearby manor is willing to trade wagon parts for hayrides. Accept?" : {"wheel" : 1,"axle" : 1,"tongue" : 1},
+    "A local vassel offers you an old ox for 15 pf. Accept?" : {"money" : -15,"oxen" : 1},
+    "The spirit of the harvest is in full swing. You get lost in a yet-unplowed field. Gain 200 marc of food, lose 2 days." : {"food" : 200,"delay" : 2},
 }
 
 let winterEvents = {
@@ -1203,3 +1203,4 @@ function consumeFood(currentRations,currentItems,currentHealth,currentParty) {
     }
 }
 // #endregion
+
