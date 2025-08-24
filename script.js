@@ -183,7 +183,7 @@ if (sessionStorage.getItem("playerParty")) {
     playerParty = JSON.parse(sessionStorage.getItem("playerParty"))
 }
 else {
-    playerParty = {player:'You',wife:'Petra',daughter:'Margeratta',son:'Gunther'}
+    playerParty = {"player":'You',"wife":'Petra',"daughter":'Margeratta',"son":'Gunther'}
 }
 
 let playerHealth
@@ -191,7 +191,7 @@ if (sessionStorage.getItem("playerHealth")) {
     playerHealth = JSON.parse(sessionStorage.getItem("playerHealth"))
 }
 else {
-    playerHealth = {player:0,wife:0,daughter:0,son:0}
+    playerHealth = {"player":0,"wife":0,"daughter":0,"son":0}
 }
 
 let rations
@@ -207,7 +207,7 @@ if (sessionStorage.getItem("playerItems")) {
     playerItems = JSON.parse(sessionStorage.getItem("playerItems"))
 }
 else {
-    playerItems = {food:0,arrows:0,money:100,herbs:0,wheel:0,axle:0,tongue:0,clothes:0,oxen:0}
+    playerItems = {"food":0,"arrows":0,"money":1000,"herbs":0,"wheel":0,"axle":0,"tongue":0,"clothes":0,"oxen":0}
 }
 
 let scoreMultiplier
@@ -274,7 +274,7 @@ if (sessionStorage.getItem("date")) {
     date = JSON.parse(sessionStorage.getItem("date"))
 }
 else {
-    date = {day:1,month:10,year:1347}
+    date = {"day":1,"month":10,"year":1347}
 }
 
 let obstacle
@@ -290,6 +290,8 @@ let paceMultiplier = 1.0
 let foodMultiplier = 1.0
 
 let eventDifficulty = 1.0
+
+let brokenWagon = false
 // #endregion
 
 // Button on story screen
@@ -1355,6 +1357,7 @@ function revivePersonPrompt(member) {
     ctx.fillText(deathText,445,47)
 }
 // #endregion
+
 
 
 
