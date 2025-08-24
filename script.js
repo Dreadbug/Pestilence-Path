@@ -122,9 +122,9 @@ let distanceLookup = {
 let summerEvents = {
     "A nearby village is willing to trade 150 marc of their harvest for your services (8 marc of herbs). Accept?" : {"food" : 150,"herbs" : -8},
     "The budding harvest has attracted locusts. Lose 20 marc of food." : {"food" : -20},
-    "You see a good omen in the sky as the sun sets. Gain 20 pf." : {"money" : 20},
-    "You see a bad omen in the sky as the midnight sun sets. Your party feels uneasy." : {"hurt" : 4},
-    "A blistering heatwave keeps your party from going any further. Lose 7 days." : {"delay" : 7},
+    "The sky is red as the sun sets, spelling good fortune for you. Gain 20 pf." : {"money" : 100},
+    "You see a bad omen in the sky as the midnight sun sets. Death is knocking on your door." : {"magicalhurt" : 4},
+    "A blistering heatwave keeps your party from going any further. Lose 4 days." : {"delay" : 4},
 }
 
 let fallEvents = {
@@ -136,27 +136,43 @@ let fallEvents = {
 }
 
 let winterEvents = {
-    "A nearby village is willing to trade 150 marc of their harvest for your services (8 marc of herbs). Accept?" : {"food" : 150,"herbs" : -8},
-    "The budding harvest has attracted locusts. Lose 20 marc of food." : {"food" : -20},
-    "You see a good omen in the sky as the sun sets. Gain 20 pf." : {"money" : 20},
-    "You see a bad omen in the sky as the midnight sun sets. Your party feels uneasy." : {"hurt" : 4},
-    "A blistering heatwave keeps your party from going any further. Lose 7 days." : {"delay" : 7},
+    "A starving village is willing to trade 4 oxen for 200 marc of food. Accept?" : {"food" : -200,"oxen" : 4},
+    "Ravenous animals have stolen some of your rations in the night. Lose 100 marc of food." : {"food" : -100},
+    "A local village is willing to host you for Yuletide. Heal all members." : {"heal" : 0},
+    "The long, cold nights are starting to take their toll on your party. One of you is gravely ill." : {"normalhurt" : 2},
+    "Your wagon gets caught in a snowbank. Lose 3 days." : {"delay" : 3},
 }
 
 let springEvents = {
-    "A nearby village is willing to trade 150 marc of their harvest for your services (8 marc of herbs). Accept?" : {"food" : 150,"herbs" : -8},
-    "The budding harvest has attracted locusts. Lose 20 marc of food." : {"food" : -20},
-    "You see a good omen in the sky as the sun sets. Gain 20 pf." : {"money" : 20},
-    "You see a bad omen in the sky as the midnight sun sets. Your party feels uneasy." : {"hurt" : 4},
-    "A blistering heatwave keeps your party from going any further. Lose 7 days." : {"delay" : 7},
+    "The wild plants are finally flowering again. Gain 50 marc of herbs." : {"herbs" : 50},
+    "You find a hunting party willing to trade your services (8 marc of herbs) for their supplies. Accept?" : {"food" : 40,"herbs" : -8,"arrows" : 30},
+    "You follow a flock of ducks to a pile of treasure. Gain 300 pf." : {"money" : 300},
+    "The cool, crisp air and plentiful food is good for the soul. Heal all members." : {"heal" : 0},
+    "The heavens have opened up and a torrent of rain has interrupted your journey. Lose 4 days." : {"delay" : 4},
 }
 
-let generalEvents = {
-    "A nearby village is willing to trade 150 marc of their harvest for your services (8 marc of herbs). Accept?" : {"food" : 150,"herbs" : -8},
-    "The budding harvest has attracted locusts. Lose 20 marc of food." : {"food" : -20},
-    "You see a good omen in the sky as the sun sets. Gain 20 pf." : {"money" : 20},
-    "You see a bad omen in the sky as the midnight sun sets. Your party feels uneasy." : {"hurt" : 4},
-    "A blistering heatwave keeps your party from going any further. Lose 7 days." : {"delay" : 7},
+let easyGeneralEvents = {
+    "Another caravan gives you some excess food. Gain 10 marc of food." : {"food" : 10},
+    "A wild ox has begun following your party. Gain 1 ox." : {"oxen" : 1},
+    "You see a golden eagle overhead as you travel. It's your lucky day! Gain 100 pf." : {"money" : 100},
+    "Today is a good day! You found spare parts for your wagon in your luggage." : {"wheel" : 1,"axle" : 1,"tongue" : 1},
+    "A nearby manor would like to give you 100 pf in exchange for your services (8 marc of herbs, lose one day). Accept?" : {"money" : 100,"herbs" : -8,"delay" : 1},
+}
+
+let mediumGeneralEvents = {
+    "One of you has a mild cold." : {"normalhurt" : 1},
+    "Someone broke into your wagon during the night. Lose 400 pf." : {"money" : -400},
+    "The animals are getting ravenous under the full moon. Lose 100 marc of food." : {"food" : -100},
+    "Aphids have gotten into your medical supplies. Lose 10 marc of herbs." : {"herbs" : -10},
+    "You seem to have unintentionally split from your party. Lose 3 days waiting for them." : {"delay" : 3},
+}
+
+let hardGeneralEvents = {
+    "One of you has caught the plague! Quick they are dying!" : {"normalhurt" : 4},
+    "One of your wagon's wheels is broken. You need to fix it." : {"wheel" : -1},
+    "One of your wagon's axles is broken. You need to fix it." : {"axle" : -1},
+    "Your wagon's tongue is broken. You need to fix it." : {"tongue" : -1},
+    "A nearby village is being ravaged by the plague. Lose 7 days to help them." : {"delay" : 7},
 }
 // #endregion
 
@@ -1339,5 +1355,6 @@ function revivePersonPrompt(member) {
     ctx.fillText(deathText,445,47)
 }
 // #endregion
+
 
 
