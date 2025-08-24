@@ -788,6 +788,10 @@ function advanceOneDay(date,isStopped) {
     if (!isStopped) {
         animateWagon() // Show the wagon moving
 
+        if (brokenWagon) {
+            paceMultiplier -= 0.5
+        }
+
         distance = calculateRemainingDistance(playerItems["oxen"],pace,paceMultiplier,distance) // Calculate new distance
 
         if (distance <= 0) {
@@ -847,6 +851,39 @@ function animateWagon() {
 
 function animateOther() {
 
+}
+
+function fillInSeasonalColors(season) {
+    // Fill in canvas
+    const gameCanvas = document.getElementById("gamecanvas")
+    gameCanvas.width = window.innerWidth
+    gameCanvas.height = window.innerHeight
+
+    const ctx = gameCanvas.getContext("2d")
+
+    // Fill back of canvas with black
+    ctx.fillStyle = "black"
+    ctx.fillRect(0,0,gameCanvas.width,gameCanvas.height)
+
+    // Fill in ground with seasonal color
+    if (season == "winter") {
+        ctx.fillStyle = "#1C9E66"
+    }
+    else if (season == "spring") {
+        ctx.fillStyle = "#1C9E20"
+    }
+    else if (season == "summer") {
+        ctx.fillStyle = "#759E1C"
+    }
+    else {
+        ctx.fillStyle = "#9E541C"
+    }
+    ctx.fillRect(0,gameCanvas.height - 300,gameCanvas.width,300)
+
+    // Fill in GUI area, eventually this will be textured instead of solid colors
+    ctx.fillStyle = "#DED36D"
+    ctx.fillRect(0,0,420,gameCanvas.height)
+    ctx.fillRect(0,gameCanvas.height-175,gameCanvas.width,175)
 }
 
 function updatePace(newPace) {
@@ -934,7 +971,15 @@ function selectEventType() {
     const eventDiceroll = Math.random()
 
     if (eventDiceroll <= 0.2 && eventDiceroll > 0.1) { // Nonseasonal event
-        return "nonseasonal"
+        if (eventDifficulty <= 0.4) { // Easy event
+            return "easy"
+        }
+        else if (eventDifficulty <= 0.8 && eventDifficulty > 0.4) { // Medium event
+            return "medium"
+        }
+        else {
+            return "hard"
+        }
     }
     else if (eventDiceroll <= 0.1) { // Seasonal event
         return "seasonal"
@@ -946,7 +991,7 @@ function selectEventType() {
 
 function displayEvent(eventType,currentSeason,isStopped) {
     let eventOutcome
-    let eventText
+    let eventText = "Today was a normal day."
     let eventList
 
     // Get event list and randomly select an event
@@ -988,18 +1033,33 @@ function displayEvent(eventType,currentSeason,isStopped) {
             }
         }
     }
-    else {
-        eventList = generalEvents
-
-        // Need to make table for nonseasonal events
+    else if (eventType == "easy") {
+        eventList = easyGeneralEvents
         if (isStopped) {
-            eventOutcome = generalEvents[Object.keys(generalEvents)[Math.floor(Math.random() * (Object.keys(generalEvents).length - 1))]]
+            eventOutcome = easyGeneralEvents[Object.keys(easyGeneralEvents)[Math.floor(Math.random() * (Object.keys(easyGeneralEvents).length - 1))]]
         }
         else {
-            eventOutcome = generalEvents[Object.keys(generalEvents)[Math.floor(Math.random() * Object.keys(generalEvents).length)]]
+            eventOutcome = easyGeneralEvents[Object.keys(easyGeneralEvents)[Math.floor(Math.random() * Object.keys(easyGeneralEvents).length)]]
         }
     }
-
+    else if (eventType == "medium") {
+        eventList = mediumGeneralEvents
+        if (isStopped) {
+            eventOutcome = mediumGeneralEvents[Object.keys(mediumGeneralEvents)[Math.floor(Math.random() * (Object.keys(mediumGeneralEvents).length - 1))]]
+        }
+        else {
+            eventOutcome = mediumGeneralEvents[Object.keys(mediumGeneralEvents)[Math.floor(Math.random() * Object.keys(mediumGeneralEvents).length)]]
+        }
+    }
+    else {
+        eventList = hardGeneralEvents
+        if (isStopped) {
+            eventOutcome = hardGeneralEvents[Object.keys(hardGeneralEvents)[Math.floor(Math.random() * (Object.keys(hardGeneralEvents).length - 1))]]
+        }
+        else {
+            eventOutcome = hardGeneralEvents[Object.keys(hardGeneralEvents)[Math.floor(Math.random() * Object.keys(hardGeneralEvents).length)]]
+        }
+    }
     // Get the text for the event by getting the key from the outcome (value)
     eventText = Object.keys(eventList).find(key => eventList[key] === eventOutcome)
 
@@ -1021,7 +1081,7 @@ function displayEvent(eventType,currentSeason,isStopped) {
 
     ctx.fillStyle = "white"
     ctx.font = "35px Manufacturing Consent"
-    ctx.fillText(eventText,445,47)
+    ctx.fillText(eventText,445,47,canvas.width-550)
 
     if (eventText.endsWith("Accept?")) {
         // Add yes button
@@ -1058,43 +1118,125 @@ function displayEvent(eventType,currentSeason,isStopped) {
 }
 
 function applyEvent(effect) {
-    // Apply event using if/else, switch case could also work but would be longer
-    if (JSON.stringify(Object.keys(effect)).includes("food")) {
-        playerItems["food"] = (playerItems["food"] + effect["food"] > 0) ? playerItems["food"] + effect["food"] : 0
+    let cannotDoThis = "none" // Initial variable for if event cannot happen
+    let eventResults = JSON.stringify(Object.keys(effect)) // Grab everything the event will change
+    let chosenPerson
+
+    // Apply event
+    if (eventResults.includes("food")) {
+        if (playerItems["food"] + effect["food"] > 0) {
+            playerItems["food"] += effect["food"]
+        }
+        else {
+            playerItems["food"] = 0
+            cannotDoThis = "food"
+        }
     }
-    if (JSON.stringify(Object.keys(effect)).includes("arrows")) {
-        playerItems["arrows"] = (playerItems["arrows"] + effect["arrows"] > 0) ? playerItems["arrows"] + effect["arrows"] : 0
+    if (eventResults.includes("arrows")) {
+        if (playerItems["arrows"] + effect["arrows"] > 0) {
+            playerItems["arrows"] += effect["arrows"]
+        }
+        else {
+            playerItems["arrows"] = 0
+            cannotDoThis = "arrows"
+        }
     }
-    if (JSON.stringify(Object.keys(effect)).includes("money")) {
-        playerItems["money"] = (playerItems["money"] + effect["money"] > 0) ? playerItems["money"] + effect["money"] : 0
+    if (eventResults.includes("money")) {
+        if (playerItems["money"] + effect["money"] > 0) {
+            playerItems["money"] += effect["money"]
+        }
+        else {
+            playerItems["money"] = 0
+            cannotDoThis = "money"
+        }
     }
-    if (JSON.stringify(Object.keys(effect)).includes("herbs")) {
-        playerItems["herbs"] = (playerItems["herbs"] + effect["herbs"] > 0) ? playerItems["herbs"] + effect["herbs"] : 0
+    if (eventResults.includes("herbs")) {
+        if (playerItems["herbs"] + effect["herbs"] > 0) {
+            playerItems["herbs"] += effect["herbs"]
+        }
+        else {
+            playerItems["herbs"] = 0
+            cannotDoThis = "herbs"
+        }
     }
-    if (JSON.stringify(Object.keys(effect)).includes("wheel")) {
-        playerItems["wheel"] = (playerItems["wheel"] + effect["wheel"] > 0) ? playerItems["wheel"] + effect["wheel"] : 0
+    if (eventResults.includes("wheel")) {
+        if (playerItems["wheel"] + effect["wheel"] >= 0) {
+            playerItems["wheel"] += effect["wheel"]
+            brokenWagon = false
+        }
+        else {
+            cannotDoThis = "wheel"
+            brokenWagon = true
+        }
     }
-    if (JSON.stringify(Object.keys(effect)).includes("axle")) {
-        playerItems["axle"] = (playerItems["axle"] + effect["axle"] > 0) ? playerItems["axle"] + effect["axle"] : 0
+    if (eventResults.includes("axle")) {
+        if (playerItems["axle"] + effect["axle"] >= 0) {
+            playerItems["axle"] += effect["axle"]
+            brokenWagon = false
+        }
+        else {
+            cannotDoThis = "axle"
+            brokenWagon = true
+        }
     }
-    if (JSON.stringify(Object.keys(effect)).includes("tongue")) {
-        playerItems["tongue"] = (playerItems["tongue"] + effect["tongue"] > 0) ? playerItems["tongue"] + effect["tongue"] : 0
+    if (eventResults.includes("tongue")) {
+        if (playerItems["tongue"] + effect["tongue"] >= 0) {
+            playerItems["tongue"] += effect["tongue"]
+            brokenWagon = false
+        }
+        else {
+            cannotDoThis = "tongue"
+            brokenWagon = true
+        }
     }
-    if (JSON.stringify(Object.keys(effect)).includes("clothes")) {
-        playerItems["clothes"] = (playerItems["clothes"] + effect["clothes"] > 0) ? playerItems["clothes"] + effect["clothes"] : 0
+    if (eventResults.includes("clothes")) {
+        if (playerItems["clothes"] + effect["food"] > 0) {
+            playerItems["clothes"] += effect["clothes"]
+        }
+        else {
+            playerItems["clothes"] = 0
+            cannotDoThis = "clothes"
+        }
     }
-    if (JSON.stringify(Object.keys(effect)).includes("oxen")) {
-        playerItems["oxen"] = (playerItems["oxen"] + effect["oxen"] > 0) ? playerItems["oxen"] + effect["oxen"] : 0
+    if (eventResults.includes("oxen")) {
+        if (playerItems["oxen"] + effect["oxen"] > 0) {
+            playerItems["oxen"] += effect["oxen"]
+        }
+        else {
+            playerItems["oxen"] = 0
+            cannotDoThis = "oxen"
+        }
     }
     if (JSON.stringify(Object.keys(effect)).includes("delay")) {
         advanceMultipleDays(date,effect["delay"])
     }
-    if (JSON.stringify(Object.keys(effect)).includes("hurt")) {
-        for (let i = 0; i < effect["hurt"]; i++) {
-            const chosenPerson = Object.keys(playerParty)[Math.floor(Math.random() * Object.keys(playerParty).length)]
+    if (eventResults.includes("magicalhurt")) {
+        // This is different from regular hurt because nobody can be revived
+        // Also unique because multiple are hurt at once
+        for (let i = 0; i < effect["magicalhurt"]; i++) {
+            chosenPerson = Object.keys(playerParty)[Math.floor(Math.random() * Object.keys(playerParty).length)]
             playerHealth[chosenPerson] -= 1
-            if (playerParty[chosenPerson] == "You") {
+        }
+        if (playerHealth["player"] <= -3) {
                 window.location.href = "game_over.html"
+            }
+    }
+    if (eventResults.includes("normalhurt")) {
+        console.log("pain")
+        // This is different from magical hurt because the person can be revived
+        // Also only affects one person in the party
+        const chosenPerson = Object.keys(playerParty)[Math.floor(Math.random() * Object.keys(playerParty).length)]
+        console.log(chosenPerson)
+        playerHealth[chosenPerson] -= effect["normalhurt"]
+        console.log(playerHealth)
+        if (playerHealth[chosenPerson] <= -3) {
+            revivePersonPrompt(chosenPerson)
+        }
+    }
+    if (eventResults.includes("heal")) {
+        for (member in playerHealth) {
+            if (playerHealth[member] > -3) {
+                playerHealth[member] = 0
             }
         }
     }
@@ -1114,12 +1256,12 @@ function applyEvent(effect) {
     if (document.getElementById("nobutton")) {
         document.getElementById("nobutton").remove()
     }
-
     if (document.getElementById("proceedbutton")) {
         document.getElementById("proceedbutton").remove()
     }
 
-    // Reenable other buttons
+    // Reenable other buttons - if the event was not a delay
+    if (!JSON.stringify(Object.keys(effect)).includes("delay") && !brokenWagon) {
     document.getElementById("barebones").disabled = false
     document.getElementById("meager").disabled = false
     document.getElementById("filling").disabled = false
@@ -1127,12 +1269,23 @@ function applyEvent(effect) {
     document.getElementById("normal").disabled = false
     document.getElementById("grueling").disabled = false
     document.getElementById("onward").disabled = false
+    }
 
-    populateTables()
+    if (chosenPerson && playerHealth[chosenPerson] <= -3) {
+        revivePersonPrompt(chosenPerson)
+    }
+    else if (cannotDoThis != "none") {
+        youCannotDoThis(cannotDoThis)
+    }
+    else {
+        populateTables()
+    }
+
     alreadyHasEvent = false
 }
 
 function youCannotDoThis(item) {
+    console.log("You cannot do this")
     const canvas = document.getElementById("gamecanvas")
     const ctx = canvas.getContext("2d")
 
@@ -1156,15 +1309,16 @@ function youCannotDoThis(item) {
 
     let updateText
     if (playerItems[item] > 0) {
-        updateText = "You only have " + String(playerItems[item]) + String(item) + "."
+        updateText = "You only have " + String(playerItems[item]) + String(item) + "(s)."
     }
     else {
-        updateText = "You have no more " + String(item) + "."
+        updateText = "You have no more " + String(item) + "(s)."
     }
 
     ctx.fillText(updateText,445,47)
 
     // Add proceed button
+    console.log("proceed added")
     const proceedButton = document.createElement("button")
     proceedButton.id = "proceedbutton"
     proceedButton.textContent = "Proceed"
@@ -1356,7 +1510,12 @@ function revivePersonPrompt(member) {
 
     ctx.fillText(deathText,445,47)
 }
+
+function resetBetweenGames() {
+    sessionStorage.clear()
+}
 // #endregion
+
 
 
 
