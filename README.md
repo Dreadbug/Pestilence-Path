@@ -1,4 +1,4 @@
-# Pestilence-Path
+# Pestilence Path
 ## An Oregon Trail-Inspired Browser Game Set in Medieval Europe
 Europe, 1347. You're a plague doctor travelling cross-continent with your family. Your task is to make two full crossings of the continent, bringing the light to a place filled with corruption and darkness. Are you up to the challenge?
 
@@ -15,7 +15,7 @@ Taking inspiration from the classic Oreegon Trail games, this project would have
 
 **Old-English Mode:** Places the entire game in Shakespearean-style English. This is just an idea and may not actually be implemented.
 
-**The Plague:** Takes the place of dysentery. The player is a plague doctor that mut cure patients across Europe. However, the player and their party are exposed to it.
+**The Plague:** Takes the place of dysentery. The player is a plague doctor that must cure patients across Europe. However, the player and their party are exposed to it.
 
 # The Technical Side
 ## The Project is not Complete
