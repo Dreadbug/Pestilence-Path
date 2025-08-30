@@ -19,7 +19,7 @@ Pending:
 - Different backgrounds
 - Shakespeare mode
 - Obstacles
-- Revive family with herbs (Good enough)
+- Revive family with herbs
 */
 
 // #region Lookup tables
@@ -237,7 +237,6 @@ if (sessionStorage.getItem("scoreMultiplier")) {
 else {
     scoreMultiplier = 1.0
 }
-
 
 // Establish the season/weather, country/temp and related difficulty
 let season
@@ -599,6 +598,30 @@ function populateTables() {
     // Money
     const moneyCell = document.getElementById("showmoney")
     moneyCell.innerHTML = String(playerItems["money"]) + " pf"
+
+    // Arrows
+    const arrowCell = document.getElementById("showarrows")
+    arrowCell,innerHTML = String(playerItems["arrows"])
+
+    // Herbs
+    const herbCell = document.getElementById("showherbs")
+    herbCell.innerHTML = String(playerItems["herbs"]) + " marc"
+
+    // Wagon axle
+    const axleCell = document.getElementById("showaxle")
+    axleCell.innerHTML = String(playerItems["axle"])
+
+    // Wagon tongue
+    const tongueCell = document.getElementById("showtongue")
+    tongueCell.innerHTML = String(playerItems["tongue"])
+
+    // Wagon wheel
+    const wheelCell = document.getElementById("showwheel")
+    wheelCell.innerHTML = String(playerItems["wheel"])
+
+    // Oxen
+    const oxenCell = document.getElementById("showoxen")
+    oxenCell.innerHTML = String(playerItems["oxen"])
 
     // Rations
     updateRations(rations)
