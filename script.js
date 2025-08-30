@@ -8,10 +8,7 @@
 /*
 Pending:
 - Hunting
-- Different tiers of events and implement difficulty checking (Good enough)
-- Make different events for each category (Good enough)
 - Art for events
-- Rework how events work when supplies are depleted (Good enough)
 - UI reshuffling
 - Change weather and season into icons
 - Pitstops (Good enough, needs art)
@@ -1549,6 +1546,24 @@ function revivePersonPrompt(member) {
     }
 
     ctx.fillText(deathText,445,47)
+}
+// #endregion
+
+// #region Functions for hunting
+function transferToHuntingScreen() {
+    // Save to session storage
+    sessionStorage.setItem("playerItems",JSON.stringify(playerItems))
+    sessionStorage.setItem("playerParty",JSON.stringify(playerParty))
+    sessionStorage.setItem("playerHealth",JSON.stringify(playerHealth))
+    sessionStorage.setItem("distance",JSON.stringify(distance))
+    sessionStorage.setItem("country",JSON.stringify(country))
+    sessionStorage.setItem("date",JSON.stringify(date))
+    sessionStorage.setItem("pace",JSON.stringify(pace))
+    sessionStorage.setItem("season",JSON.stringify(season))
+    sessionStorage.setItem("scoreMultiplier",JSON.stringify(scoreMultiplier))
+    sessionStorage.setItem("rations",JSON.stringify(rations))
+
+    window.location.href = "hunting.html"
 }
 // #endregion
 
