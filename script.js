@@ -1,6 +1,26 @@
 // This file contains all the behavior for some of the html elements
 // It also holds the game behavior
 
+// Alerts are placeholders for incomplete code
+// Need to fix: money bug after multiple restarts (Fixed for now)
+// Need to fix: once character dies, some things are still counting them
+// Most pending features need art assets done first
+/*
+Pending:
+- Hunting
+- Different tiers of events and implement difficulty checking (Good enough)
+- Make different events for each category (Good enough)
+- Art for events
+- Rework how events work when supplies are depleted (Good enough)
+- UI reshuffling
+- Change weather and season into icons
+- Pitstops (Good enough, needs art)
+- Walking animation
+- Different backgrounds
+- Shakespeare mode
+- Obstacles
+- Revive family with herbs (Good enough)
+*/
 
 // #region Lookup tables
 let summerTempLookup = {
@@ -207,7 +227,7 @@ if (sessionStorage.getItem("playerItems")) {
     playerItems = JSON.parse(sessionStorage.getItem("playerItems"))
 }
 else {
-    playerItems = {"food":0,"arrows":0,"money":1000,"herbs":0,"wheel":0,"axle":0,"tongue":0,"clothes":0,"oxen":0}
+    playerItems = {"food":0,"arrows":0,"money":1000,"herbs":0,"wheel":0,"axle":0,"tongue":0,"oxen":0}
 }
 
 let scoreMultiplier
@@ -217,6 +237,7 @@ if (sessionStorage.getItem("scoreMultiplier")) {
 else {
     scoreMultiplier = 1.0
 }
+
 
 // Establish the season/weather, country/temp and related difficulty
 let season
@@ -277,12 +298,12 @@ else {
     date = {"day":1,"month":10,"year":1347}
 }
 
-let obstacle
-if (sessionStorage.getItem("obstacle")) {
-    obstacle = JSON.parse(sessionStorage.getItem("obstacle"))
+let midJourney
+if (sessionStorage.getItem("midJourney")) {
+    midJourney = true
 }
 else {
-    obstacle = "river" // Player needs to cross the Rhine as the first obstacle
+    midJourney = false
 }
 
 let paceMultiplier = 1.0
@@ -294,6 +315,7 @@ let eventDifficulty = 1.0
 let brokenWagon = false
 // #endregion
 
+// #region Pregame settings
 // Button on story screen
 let numClicks = 0
 function changeTitleText() {
@@ -346,7 +368,7 @@ function changePartyNames() {
 // Update money based on occupation
 function changeJobMoney(job) {
     if (job == "farmer") {
-        playerItems["money"] = 50
+        playerItems["money"] = 500
         playerItems["food"] = 200
         scoreMultiplier = 2.0
         document.getElementById("farmeroption").style.color = "green"
@@ -354,7 +376,7 @@ function changeJobMoney(job) {
         document.getElementById("doctoroption").style.color = "white"
     }
     else if (job == "medic") {
-        playerItems["money"] = 200
+        playerItems["money"] = 2000
         playerItems["herbs"] = 50
         document.getElementById("farmeroption").style.color = "white"
         document.getElementById("barberoption").style.color = "white"
@@ -362,7 +384,7 @@ function changeJobMoney(job) {
         scoreMultiplier = 1.0
     }
     else {
-        playerItems["money"] = 125
+        playerItems["money"] = 1250
         document.getElementById("farmeroption").style.color = "white"
         document.getElementById("barberoption").style.color = "green"
         document.getElementById("doctoroption").style.color = "white"
@@ -429,7 +451,7 @@ function changeInitialSeason(chosenSeason) {
 
     // Save to session storage
     sessionStorage.setItem("season",JSON.stringify(season))
-    sessionStorage.setItem("seasonTemp",JSON.stringify(seasonTemp))
+    sessionStorage.setItem("temperature",JSON.stringify(temperature))
     sessionStorage.setItem("date",JSON.stringify(date))
 }
 
@@ -441,10 +463,9 @@ function calculateBill() {
     const wheel = document.getElementById("wheelsbought").value
     const axle = document.getElementById("axlesbought").value
     const tongue = document.getElementById("tonguesbought").value
-    const clothes = document.getElementById("clothesbought").value
     const oxen = document.getElementById("oxenbought").value
 
-    let totalBill = (food * 1) + (arrows * 5) + (herbs * 10) + (wheel * 30) + (axle * 30) + (tongue * 30) + (clothes * 15) + (oxen * 50)
+    let totalBill = (food * 1) + (arrows * 5) + (herbs * 10) + (wheel * 30) + (axle * 30) + (tongue * 30) + (oxen * 50)
 
     if ((playerItems["money"] - totalBill) < 0) {
         document.getElementById("moneyavailable").innerHTML = "Not enough money! Please reduce your purchases!"
@@ -463,10 +484,9 @@ function finishPurchase() {
     const wheel = document.getElementById("wheelsbought").value
     const axle = document.getElementById("axlesbought").value
     const tongue = document.getElementById("tonguesbought").value
-    const clothes = document.getElementById("clothesbought").value
     const oxen = document.getElementById("oxenbought").value
 
-    let totalBill = (food * 1) + (arrows * 5) + (herbs * 10) + (wheel * 30) + (axle * 30) + (tongue * 30) + (clothes * 15) + (oxen * 50)
+    let totalBill = (food * 1) + (arrows * 5) + (herbs * 10) + (wheel * 30) + (axle * 30) + (tongue * 30) + (oxen * 50)
 
     if ((playerItems["money"] - totalBill) < 0) {
         document.getElementById("moneyavailable").innerHTML = "Not enough money! Please reduce your purchases!"
@@ -480,16 +500,22 @@ function finishPurchase() {
         playerItems["wheel"] += parseInt(wheel)
         playerItems["axle"] += parseInt(axle)
         playerItems["tongue"] += parseInt(tongue)
-        playerItems["clothes"] += parseInt(clothes)
         playerItems["oxen"] += (parseInt(oxen) * 2)
 
         // Save to session storage
         sessionStorage.setItem("playerItems",JSON.stringify(playerItems))
 
         // Send player to next page
-        window.location.href = "ready_to_begin.html"
+        if (midJourney) {
+            window.location.href = "pitstop.html"
+        }
+        else {
+            window.location.href = "ready_to_begin.html"
+        }
     }
 }
+// #endregion
+
 
 // Populate canvas with text and starting animation
 function initializeGameloop() {
@@ -526,8 +552,8 @@ function initializeGameloop() {
 
     // Fill in tables with player info
     populateTables()
-}
 
+}
 
 function populateTables() {
     paceMultiplier = 1.0 // Reset pacemultiplier
@@ -561,18 +587,10 @@ function populateTables() {
     // Country
     const countryCell = document.getElementById("showcountry")
     countryCell.innerHTML = String(country)
-    
-    // Pace
-    const paceCell = document.getElementById("showpace")
-    paceCell.innerHTML = pace
 
     // Food
     const foodCell = document.getElementById("showfood")
     foodCell.innerHTML = String(playerItems["food"]) + " marc"
-
-    // Rations
-    const rationsCell = document.getElementById("showrations")
-    rationsCell.innerHTML = rations
 
     // Health
     const healthCell = document.getElementById("showhealth")
@@ -582,32 +600,15 @@ function populateTables() {
     const moneyCell = document.getElementById("showmoney")
     moneyCell.innerHTML = String(playerItems["money"]) + " pf"
 
-    // Player
-    const playerHealthCell = document.getElementById("showyou")
-    playerHealthCell.innerHTML = getIndividualHealth("player")
+    // Rations
+    updateRations(rations)
 
-    // Wife
-    const wifeNameCell = document.getElementById("showwifename")
-    wifeNameCell.innerHTML = playerParty["wife"]
-    const wifeHealthCell = document.getElementById("showwife")
-    wifeHealthCell.innerHTML = getIndividualHealth("wife")
-
-    // Daughter
-    const daughterNameCell = document.getElementById("showdaughtername")
-    daughterNameCell.innerHTML = playerParty["daughter"]
-    const daughterHealthCell = document.getElementById("showdaughter")
-    daughterHealthCell.innerHTML = getIndividualHealth("daughter")
-
-    // Son
-    const sonNameCell = document.getElementById("showsonname")
-    sonNameCell.innerHTML = playerParty["son"]
-    const sonHealthCell = document.getElementById("showson")
-    sonHealthCell.innerHTML = getIndividualHealth("son")
+    // Pace
+    updatePace(pace)
 }
 
+
 // #region Group of functions that return what to put in gameloop fields
-// Group of functions that return what to put in gameloop fields
-// Need to make difficulty adjustemnts within them still
 // Ex. stormy weather and straightline winds should make travelling harder, and thus reduce distance travelled
 function determineTemperature(currentSeason,currentCountry) {
     // Get lookup table to be used
@@ -690,25 +691,6 @@ function determineWind(currentPrecipitation) {
         paceMultiplier += 1.0
         eventDifficulty -= 0.2
         return "Calm"
-    }
-}
-
-function getIndividualHealth(member) {
-    // Check if the member is healthy, sick or dead
-    if (playerHealth[member] == 0) {
-        paceMultiplier += 0.2
-        return "Healthy"
-    }
-    else if (playerHealth[member] == -1) {
-        paceMultiplier -= 0.1
-        return "Sick"
-    }
-    else if (playerHealth[member] == -2) {
-        paceMultiplier -= 0.2
-        return "Brink of Death"
-    }
-    else {
-        return "Dead"
     }
 }
 
@@ -832,7 +814,16 @@ function advanceMultipleDays(date,delayLength) {
         i += 1;
 
         if ( i == delayLength) {
-        clearInterval(intervalID)
+        clearInterval(intervalID);
+
+        // Reenable other buttons
+        document.getElementById("barebones").disabled = false
+        document.getElementById("meager").disabled = false
+        document.getElementById("filling").disabled = false
+        document.getElementById("leisurely").disabled = false
+        document.getElementById("normal").disabled = false
+        document.getElementById("grueling").disabled = false
+        document.getElementById("onward").disabled = false
         };
 
         advanceOneDay(date,true)},1000)
@@ -846,7 +837,7 @@ function animateOther() {
 
 }
 
-function fillInSeasonalColors(season) {
+function fillInSeasonalColors(country,season) {
     // Fill in canvas
     const gameCanvas = document.getElementById("gamecanvas")
     gameCanvas.width = window.innerWidth
@@ -859,7 +850,10 @@ function fillInSeasonalColors(season) {
     ctx.fillRect(0,0,gameCanvas.width,gameCanvas.height)
 
     // Fill in ground with seasonal color
-    if (season == "winter") {
+    if (country == "Portugal") {
+        ctx.fillStyle = "#235491"
+    }
+    else if (season == "winter") {
         ctx.fillStyle = "#1C9E66"
     }
     else if (season == "spring") {
@@ -882,17 +876,41 @@ function fillInSeasonalColors(season) {
 function updatePace(newPace) {
     pace = newPace
 
-    // Pace
-    const paceCell = document.getElementById("showpace")
-    paceCell.innerHTML = pace
+    if (newPace == "Grueling") {
+        document.getElementById("grueling").style.color = "green"
+        document.getElementById("normal").style.color = "white"
+        document.getElementById("leisurely").style.color = "white"
+    }
+    else if (newPace == "Normal") {
+        document.getElementById("grueling").style.color = "white"
+        document.getElementById("normal").style.color = "green"
+        document.getElementById("leisurely").style.color = "white"
+    }
+    else {
+        document.getElementById("grueling").style.color = "white"
+        document.getElementById("normal").style.color = "white"
+        document.getElementById("leisurely").style.color = "green"
+    }
 }
 
 function updateRations(newRations) {
     rations = newRations
 
-    // Rations
-    const rationsCell = document.getElementById("showrations")
-    rationsCell.innerHTML = rations
+    if (newRations == "Filling") {
+        document.getElementById("filling").style.color = "green"
+        document.getElementById("meager").style.color = "white"
+        document.getElementById("barebones").style.color = "white"
+    }
+    else if (newRations == "Meager") {
+        document.getElementById("filling").style.color = "white"
+        document.getElementById("meager").style.color = "green"
+        document.getElementById("barebones").style.color = "white"
+    }
+    else {
+        document.getElementById("filling").style.color = "white"
+        document.getElementById("meager").style.color = "white"
+        document.getElementById("barebones").style.color = "green"
+    }
 }
 
 function advanceDate(date) {
@@ -1074,7 +1092,7 @@ function displayEvent(eventType,currentSeason,isStopped) {
 
     ctx.fillStyle = "white"
     ctx.font = "35px Manufacturing Consent"
-    ctx.fillText(eventText,445,47,canvas.width-550)
+    ctx.fillText(eventText,445,47,canvas.width-650)
 
     if (eventText.endsWith("Accept?")) {
         // Add yes button
@@ -1182,15 +1200,6 @@ function applyEvent(effect) {
             brokenWagon = true
         }
     }
-    if (eventResults.includes("clothes")) {
-        if (playerItems["clothes"] + effect["food"] > 0) {
-            playerItems["clothes"] += effect["clothes"]
-        }
-        else {
-            playerItems["clothes"] = 0
-            cannotDoThis = "clothes"
-        }
-    }
     if (eventResults.includes("oxen")) {
         if (playerItems["oxen"] + effect["oxen"] > 0) {
             playerItems["oxen"] += effect["oxen"]
@@ -1254,7 +1263,7 @@ function applyEvent(effect) {
     }
 
     // Reenable other buttons - if the event was not a delay
-    if (!JSON.stringify(Object.keys(effect)).includes("delay") && !brokenWagon) {
+    if (!JSON.stringify(Object.keys(effect)).includes("delay")) {
     document.getElementById("barebones").disabled = false
     document.getElementById("meager").disabled = false
     document.getElementById("filling").disabled = false
@@ -1362,12 +1371,13 @@ function consumeFood(currentRations,currentItems,currentHealth,currentParty) {
         foodPerPerson = 1
     }
 
-    for (const member in currentParty) {
-        if (member != "") {
-            foodEaten += foodPerPerson
+    for (const member in currentHealth) {
+        if (currentHealth[member] > -3) {
+            foodEaten += foodPerPerson * (1 + Math.round(1/foodMultiplier))
         }
     }
 
+    // Starving
     if (currentItems["food"] < foodEaten) {
         currentItems["food"] = 0
 
@@ -1389,6 +1399,12 @@ function consumeFood(currentRations,currentItems,currentHealth,currentParty) {
 function revivePerson(member,proceed) {
     if (proceed) {
         playerHealth[member] = 0
+        if (playerItems["herbs"] - 3 > 0) {
+            playerItems["herbs"] -= 3
+        }
+        else {
+            playerItems["herbs"] = 0
+        }
     }
     else {
         if (playerParty[member] == "You") {
@@ -1430,6 +1446,18 @@ function revivePerson(member,proceed) {
 }
 
 function revivePersonPrompt(member) {
+    if (document.getElementById("yesbutton")) {
+        document.getElementById("yesbutton").remove()
+    }
+
+    if (document.getElementById("nobutton")) {
+        document.getElementById("nobutton").remove()
+    }
+
+    if (document.getElementById("proceedbutton")) {
+        document.getElementById("proceedbutton").remove()
+    }
+
     let deathText
 
     // Disable other buttons
@@ -1451,7 +1479,6 @@ function revivePersonPrompt(member) {
     ctx.font = "35px Manufacturing Consent"
 
     if (playerItems["herbs"] >= 3) {
-        console.log("Has enough")
         if (playerParty[member] != "You") {
             deathText = String(playerParty[member]) + " is dying! Save them? (3 marc of herbs)"
         }
@@ -1480,7 +1507,6 @@ function revivePersonPrompt(member) {
         document.getElementById("addbuttonhere").appendChild(noButton)
     }
     else {
-        console.log("Does not have enough")
         if (playerParty[member] != "You") {
             deathText = String(playerParty[member]) + " has died."
         }
@@ -1501,14 +1527,35 @@ function revivePersonPrompt(member) {
 
     ctx.fillText(deathText,445,47)
 }
+// #endregion
+
+// #region Functions that control the screen during player pitstops (going between countries)
+function transferToCountry(newCountry) {
+    // Save to session storage
+    sessionStorage.setItem("playerItems",JSON.stringify(playerItems))
+    sessionStorage.setItem("playerParty",JSON.stringify(playerParty))
+    sessionStorage.setItem("playerHealth",JSON.stringify(playerHealth))
+    sessionStorage.setItem("distance",JSON.stringify(distance))
+    sessionStorage.setItem("country",JSON.stringify(newCountry))
+    sessionStorage.setItem("date",JSON.stringify(date))
+    sessionStorage.setItem("pace",JSON.stringify(pace))
+    sessionStorage.setItem("season",JSON.stringify(season))
+    sessionStorage.setItem("scoreMultiplier",JSON.stringify(scoreMultiplier))
+    sessionStorage.setItem("rations",JSON.stringify(rations))
+    sessionStorage.setItem("midJourney",JSON.stringify(true))
+
+    window.location.href = "pitstop.html"
+
+    const newCountryText = document.getElementById("welcometocountrytext")
+    newCountryText.innerHTML = "You have arrived in " + String(newCountry) + "!"
+}
+
+function alterCountryAppearance() {
+    const newCountryText = document.getElementById("welcometocountrytext")
+    newCountryText.innerHTML = "You have arrived in " + String(country) + "!"
+}
+// #endregion
 
 function resetBetweenGames() {
     sessionStorage.clear()
 }
-// #endregion
-
-
-
-
-
-
