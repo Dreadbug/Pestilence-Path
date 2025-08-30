@@ -150,7 +150,7 @@ let summerEvents = {
 let fallEvents = {
     "A nearby manor offers you 100 pf for an ox to plow the fields. Accept?" : {"money" : 100, "oxen" : -1},
     "A will o' the wisp appears in front of your party. You follow it to an old war stash. Gain 20 arrows" : {"arrows" : 20},
-    "A nearby manor is willing to trade wagon parts for hayrides. Accept?" : {"wheel" : 1,"axle" : 1,"tongue" : 1},
+    "A nearby manor is willing to trade wagon parts for hayrides. Accept?" : [{"wheel" : 1},{"axle" : 1},{"tongue" : 1}][Math.floor(Math.random() * 3)],
     "A local vassel offers you an old ox for 15 pf. Accept?" : {"money" : -15,"oxen" : 1},
     "The spirit of the harvest is in full swing. You get lost in a yet-unplowed field. Gain 200 marc of food, lose 2 days." : {"food" : 200,"delay" : 2},
 }
@@ -175,7 +175,7 @@ let easyGeneralEvents = {
     "Another caravan gives you some excess food. Gain 10 marc of food." : {"food" : 10},
     "A wild ox has begun following your party. Gain 1 ox." : {"oxen" : 1},
     "You see a golden eagle overhead as you travel. It's your lucky day! Gain 100 pf." : {"money" : 100},
-    "Today is a good day! You found spare parts for your wagon in your luggage." : {"wheel" : 1,"axle" : 1,"tongue" : 1},
+    "Today is a good day! You found spare parts for your wagon in your luggage." : [{"wheel" : 1},{"axle" : 1},{"tongue" : 1}][Math.floor(Math.random() * 3)],
     "A nearby manor would like to give you 100 pf in exchange for your services (8 marc of herbs, lose one day). Accept?" : {"money" : 100,"herbs" : -8,"delay" : 1},
 }
 
