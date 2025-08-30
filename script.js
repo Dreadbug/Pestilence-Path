@@ -781,7 +781,6 @@ function resetEventDifficulty(season) {
 
 // #region The regular gameloop
 // Advance one normal day without delays
-let alreadyHasEvent = false
 function advanceOneDay(date,isStopped) {
     let event = "none"
 
@@ -802,33 +801,27 @@ function advanceOneDay(date,isStopped) {
                 const keys = Object.keys(distanceLookup)
                 country = keys.at(keys.indexOf(country) + 1)
                 distance = distanceLookup[country]
+                transferToCountry(country)
             }
         }
 
         animateOther() // Show a checkpoint or obstacle approaching
 
         event = selectEventType() // See if an event occurs, party can be delayed
-
-        alreadyHasEvent = false
-    }
-    else {
-        if (!alreadyHasEvent) {
-            event = selectEventType() // See if another event occurs, delay cannot be lengthened
-            alreadyHasEvent = true
-        }
-    }
-
-    if (event != "none") {
-        displayEvent(event,season,isStopped)
     }
 
     advanceDate(date) // Move date one day forward and change month/year if needed
 
     season = updateSeason(date) // Update season
+    fillInSeasonalColors(country,season)
+
+    if (event != "none") {
+        displayEvent(event,season,isStopped)
+    }
 
     consumeFood(rations,playerItems,playerHealth,playerParty) // Consume food based on rations
 
-    populateTables() // Fill in tables once everything is complete
+    populateTables() // Fill in tables and correct colors once everything is complete
 }
 
 // Advance through a delay without moving
@@ -1280,8 +1273,6 @@ function applyEvent(effect) {
     else {
         populateTables()
     }
-
-    alreadyHasEvent = false
 }
 
 function youCannotDoThis(item) {
@@ -1515,6 +1506,7 @@ function resetBetweenGames() {
     sessionStorage.clear()
 }
 // #endregion
+
 
 
 
