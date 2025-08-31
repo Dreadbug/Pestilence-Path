@@ -1566,16 +1566,43 @@ function transferToHuntingScreen() {
     window.location.href = "hunting.html"
 }
 
+function playerCharacter(height,width,startingX,startingY,numArrows,canvas) {
+    this.height = height
+    this.width = width
+    this.x = startingX
+    this.y = startingY
+    this.arrows = numArrows
+
+    this.update = function() {
+    let ctx = canvas.getContext("2d")
+    ctx.fillStyle = "red"
+    ctx.fillRect(this.x,this.y,this.width,this.height)
+    }
+}
+
+let theHunt
+let playerSprite
 function startHunt() {
     const huntingArea = document.getElementById("huntingarea")
-    var theHunt = {
+    theHunt = {
         start: function() {
+            this.ctx = huntingArea.getContext("2d")
             huntingArea.style.width = "100%"
             huntingArea.style.height = "100%"
+            this.interval = setInterval(updateHunt, 20)
+        },
+        clearArea: function() {
+            this.ctx.clearRect(0, 0, huntingArea.width, huntingArea.height)
         }
     }
 
     theHunt.start()
+    playerSprite = new playerCharacter(50,25,huntingArea.width/2,huntingArea.height/2,playerItems["arrows"],huntingArea)
+}
+
+function updateHunt() {
+    theHunt.clearArea()
+    playerSprite.update()
 }
 // #endregion
 
