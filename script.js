@@ -1565,6 +1565,18 @@ function transferToHuntingScreen() {
 
     window.location.href = "hunting.html"
 }
+
+function startHunt() {
+    const huntingArea = document.getElementById("huntingarea")
+    var theHunt = {
+        start: function() {
+            huntingArea.style.width = "100%"
+            huntingArea.style.height = "100%"
+        }
+    }
+
+    theHunt.start()
+}
 // #endregion
 
 // #region Functions that control the screen during player pitstops (going between countries)
