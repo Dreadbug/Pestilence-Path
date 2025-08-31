@@ -1574,9 +1574,24 @@ function playerCharacter(height,width,startingX,startingY,numArrows,canvas) {
     this.arrows = numArrows
 
     this.update = function() {
-    let ctx = canvas.getContext("2d")
-    ctx.fillStyle = "red"
-    ctx.fillRect(this.x,this.y,this.width,this.height)
+        document.addEventListener("keydown", (event) => {
+            if (event.key == "w" && this.y - 5 >= 0) {
+                this.y -= 0.1
+            }
+            else if (event.key == "s" && this.y + 5 + this.height <= canvas.height) {
+                this.y += 0.1
+            }
+            if (event.key == "a" && this.x - 5 >= 0) {
+                this.x -= 0.1
+            }
+            else if (event.key == "d" && this.x + 5 + this.width <= canvas.width) {
+                this.x += 0.1
+            }
+        })
+
+        let ctx = canvas.getContext("2d")
+        ctx.fillStyle = "red"
+        ctx.fillRect(this.x,this.y,this.width,this.height)
     }
 }
 
@@ -1586,9 +1601,9 @@ function startHunt() {
     const huntingArea = document.getElementById("huntingarea")
     theHunt = {
         start: function() {
+            huntingArea.width = window.innerWidth
+            huntingArea.height = window.innerHeight
             this.ctx = huntingArea.getContext("2d")
-            huntingArea.style.width = "100%"
-            huntingArea.style.height = "100%"
             this.interval = setInterval(updateHunt, 20)
         },
         clearArea: function() {
