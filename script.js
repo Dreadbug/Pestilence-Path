@@ -1573,6 +1573,11 @@ function playerCharacter(height,width,startingX,startingY,numArrows,canvas) {
     this.y = startingY
     this.arrows = numArrows
 
+    this.shootArrow = function() {
+        console.log("Arrow shot!")
+        // Arrow shooting code will go here eventually
+    }
+
     this.update = function() {
         document.addEventListener("keydown", (event) => {
             if (event.key == "w" && this.y - 5 >= 0) {
@@ -1586,6 +1591,13 @@ function playerCharacter(height,width,startingX,startingY,numArrows,canvas) {
             }
             else if (event.key == "d" && this.x + 5 + this.width <= canvas.width) {
                 this.x += 0.1
+            }
+        })
+        document.addEventListener("click", (event) => {
+            if (this.arrows > 0) {
+                this.arrows -= 1
+                playerItems["arrows"] -= 1
+                this.shootArrow()
             }
         })
 
