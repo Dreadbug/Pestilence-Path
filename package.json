@@ -1,0 +1,21 @@
+{
+  "name": "pestilence-path",
+  "version": "1.0.0",
+  "description": "Europe, 1347. You're a plague doctor travelling cross-continent with your family. Your task is to make two full crossings of the continent, bringing the light to a place filled with corruption and darkness. Are you up to the challenge?",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dreadbug/Pestilence-Path.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Dreadbug/Pestilence-Path/issues"
+  },
+  "homepage": "https://github.com/Dreadbug/Pestilence-Path#readme"
+}
