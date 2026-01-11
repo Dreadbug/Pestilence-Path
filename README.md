@@ -21,6 +21,8 @@ Taking inspiration from the classic Oreegon Trail games, this project would have
 ## The Project is not Complete
 As the heading says, this project is not yet completed. Most of the actual game logic has not being completed yet. As such I would recommend not downloading anything just yet as it will most likely be changed in the future.
 
+This project is also being gradually changed over to TypeScript. Even though it still compiles to JavaScript it's easier to keep track of everything.
+
 Once this project is complete it will most likely be posted on GitHub Pages to be played. Another possibility is itch.io. Both will be linked here once the project is complete.
 
 ## Why was this Project Created?
